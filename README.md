@@ -38,10 +38,42 @@ Being an insider is the credibility — but lead as the *math teacher*, and let 
 
 ## Sources & curricula to build from
 
-> This list is being expanded from a dedicated research pass into youth gambling-prevention curricula, partner organizations, and the academic sources behind the brain/PASPA claims. The final slide (`Sources`) and this section will be updated with the cited list.
+Compiled from a fact-checked research pass (20 claims confirmed via 3-vote adversarial verification; 5 dropped as refuted). Caveats are kept honest on purpose — this is for a data scientist.
 
-- National Council on Problem Gambling (NCPG) — helpline + awareness materials — https://www.ncpgambling.org
-- *(more cited curricula and partner orgs to be added)*
+### Curricula a teacher can adopt or adapt
+- **Stacked Deck** — Williams & Wood, Hazelden, 2nd ed. 2022. 5–6 interactive lessons for grades 9–12 on the history of gambling, **true odds and the "house edge,"** gambling fallacies, problem-gambling risk factors, and decision-making ("approach life as a *smart gambler*"). The strongest-evidenced youth program: a controlled Alberta study (949 intervention vs. 291 control students) found improved knowledge, more negative attitudes, greater resistance to fallacies, and reduced gambling frequency/problem rates at 4-month follow-up.
+  - *Caveat:* effectiveness studies were run by the program's own developers (2003–07), found **no** significant change in money lost, and predate modern sports betting. Facilitator's Guide (Grades 9–12): ISBN 9781592858934.
+  - https://www.hazelden.org/store/item/557330 · https://pubmed.ncbi.nlm.nih.gov/20405219/ · https://eric.ed.gov/?id=EJ886815
+- **Florida Council on Compulsive Gambling (FCCG)** — free K–12 curriculum built on Common Core probability standards ("What Are My Chances?": experimental/theoretical → independent/conditional probability, tied to real gambling odds). Also co-developed *"When Gambling Takes Control of the Game"* with the NCAA + NFHS for student-athletes. *Caveat:* lessons dated 2005, sports curriculum ~2013 (pre-PASPA).
+  - https://gamblinghelp.org/prevention/
+- **ICRG — "Talking with Children About Gambling"** — free, research-based, developed with the Division on Addiction at Cambridge Health Alliance (a Harvard Medical School affiliate). Parent-primary (educators secondary), aimed at the "tween" years (9–13) up. The **NFL is funding an update** (announced June 2025) for parents, coaches, and educators. It explicitly recommends adding **probability and randomness to math classes** as prevention.
+  - https://naadgs.org/talking-with-children-about-gambling-icrg/ · https://www.icrg.org
+
+### Organizations: free materials, grants & training
+- **NCPG — Agility Grants** — NFL-Foundation-funded ($1.5M, 2025–27); explicitly target middle/high-school/college students and athletes; fund primary (haven't gambled) and secondary (limited experience) prevention.
+  - https://www.ncpgambling.org/programs-resources/agility-grants/
+- **North Carolina Problem Gambling Program** — **up to $5,000 mini-grants** to middle/high schools to implement Stacked Deck, including educator training, tech support, and all materials (in-class, virtual, or self-guided LMS). (Apply via your school, not as an individual.)
+- **New York (NYCPG + NYS PTA)** — *free printed materials shipped to your school* for "Empower Every Child to Be Gambling Free" events; the **YOU Decide** project (under-25) and **Mind Ride** interactive experience for home/classroom.
+  - https://nyspta.org/empower-every-child-to-be-gambling-free/ · https://youdecideny.org
+- **NCAA + EPIC Global Solutions** — in-person sports-gambling harm-prevention for student-athletes (100k+ reached), free to member schools through 2027. The training **"An Introduction to Youth Problem Gambling"** is built for teachers, coaches, athletic directors, and counselors — not just clinicians.
+  - https://www.ncaa.org/news/2023/2/22/media-center-ncaa-and-epic-provide-sports-gambling-harm-prevention-education-to-over-10-000-student-athletes.aspx · https://www.epicglobalsolutions.com/ncaa/
+
+### The gap this deck fills
+**No verified, evidence-based curriculum yet teaches the deliberate design of modern app-era sportsbook products** — parlays, same-game parlays, live/in-play betting, deposit/free-bet promos, push notifications — or how they obscure true odds and compound the house edge. That is precisely the content a sportsbook data scientist is uniquely positioned to build. On the rise among teen boys since the 2018 PASPA repeal and how apps use psychology to retain users:
+- https://www.educationnext.org/teen-boys-are-gambling-a-lot-legal-sports-betting/
+- https://www.scientificamerican.com/article/how-sports-betting-apps-use-psychology-to-keep-users-gambling/
+- https://www.ncaa.org/news/2025/1/14/media-center-ncaa-study-education-shows-promise-in-changing-sports-betting-behaviors-harassment-from-bettors-prevalent-in-di.aspx
+- https://www.addiction.rutgers.edu/the-rise-of-sports-betting-among-college-students-a-growing-public-health-concern/
+
+### On who delivers the message
+Evidence supports trained teachers, coaches, and parents as messengers. The one wrinkle the research flags: responsible-gambling messaging from someone employed by an operator can be viewed skeptically. No source forbids it — but pre-empt it by leading with your teacher/independent identity and being transparent. (See the "who delivers this" note above.)
+
+### Youth risk context (for framing, not fear)
+Cited figures: roughly **2–7% of young people** experience a gambling problem vs. **~1% of adults**, with **boys at higher risk** — and an older national estimate that ~70% of 14–19-year-olds gambled in the past year. Treat exact percentages as directional; the direction is well established.
+
+### National helpline
+- **Call or text 1-800-GAMBLER** — National Problem Gambling Helpline, confidential, all 50 states.
+- **NCPG chat:** https://www.ncpgambling.org/chat
 
 ## Editing
 
