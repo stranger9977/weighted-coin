@@ -8,6 +8,23 @@ const PLAYER_WIN_PROB = 1 - HOUSE_WIN_PROB; // 47.62%
 const LEG_DECIMAL = 210 / 110;       // −110 in decimal odds = 1.9091
 const LEG_EDGE_FACTOR = 0.5 * LEG_DECIMAL; // 0.95455 — fair coin priced at −110
 
+/* ---------- insider / neutral framing toggle ---------- */
+function currentMode() {
+  const urlMode = new URLSearchParams(location.search).get('mode');
+  if (urlMode === 'neutral' || urlMode === 'insider') return urlMode;
+  try { return localStorage.getItem('wc-mode') || 'insider'; } catch (e) { return 'insider'; }
+}
+function applyMode(mode) {
+  document.body.classList.toggle('mode-neutral', mode === 'neutral');
+  const chip = document.getElementById('modeChip');
+  if (chip) chip.innerHTML = 'Framing: <b>' + mode + '</b> · M';
+  try { localStorage.setItem('wc-mode', mode); } catch (e) {}
+}
+function toggleMode() {
+  applyMode(document.body.classList.contains('mode-neutral') ? 'insider' : 'neutral');
+}
+applyMode(currentMode()); // run before reveal paints, to avoid a flash of the wrong framing
+
 /* ---------- reveal init ---------- */
 Reveal.initialize({
   hash: true,
@@ -225,6 +242,12 @@ function wire() {
   if (legs) { legs.oninput = updateParlay; updateParlay(); }
 }
 
-Reveal.on('ready', () => { wire(); s2Render(); });
+Reveal.on('ready', () => {
+  wire();
+  s2Render();
+  const chip = document.getElementById('modeChip');
+  if (chip) chip.onclick = toggleMode;
+  Reveal.addKeyBinding({ keyCode: 77, key: 'M', description: 'Toggle insider / neutral framing' }, toggleMode);
+});
 Reveal.on('slidechanged', () => { drawChart(); });
 window.addEventListener('resize', drawChart);

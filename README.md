@@ -13,6 +13,13 @@ Built by a former teacher who now builds NFL betting models for a sportsbook. Th
 - Press **F** for fullscreen, **ESC** for the slide overview.
 - It works on a phone too, so students can poke at the interactive parts themselves.
 
+### Insider vs. neutral framing (press **M**)
+The deck ships in two voices, toggled with the **M** key (or the chip in the bottom-left corner):
+- **Insider** (default) — you present as someone who builds the betting models, turned inside out. Maximum credibility.
+- **Neutral** — you present purely as *"a math teacher who knows how the industry works,"* with **no claim of working for a sportsbook**. Use this if your employer has policies about public affiliation, or to side-step any conflict-of-interest optics (the research flagged operator-tied messaging as a credibility risk).
+
+Your choice is remembered between sessions. You can also lock a version with a URL: `?mode=neutral` or `?mode=insider` — handy for a bookmark you'll present from. The corner chip is small and unobtrusive on a projector.
+
 ### The two interactive toys
 1. **The coin simulator (slides 2–3).** Flip a fair coin and it feels fair. Then flip the toggle to *"the book's coin"* and run 100 flips — the bankroll line marches down even though you still win ~48% of the time. That invisible drift is the lesson.
 2. **The parlay calculator (slide 6).** Drag the slider from 1 to 10 legs and watch the house's cut balloon from ~4.5% to ~37%. Pure multiplication; genuinely jaw-dropping.
