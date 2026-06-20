@@ -240,20 +240,6 @@ input[type=range].legs::-webkit-slider-thumb {
   font-family: "Inter", sans-serif; z-index: 30;
 }
 
-/* ===== insider / neutral framing toggle ===== */
-.v-neutral { display: none; }
-body.mode-neutral .v-insider { display: none; }
-body.mode-neutral .v-neutral { display: revert; }
-
-.mode-chip {
-  position: fixed; bottom: 10px; left: 16px; z-index: 40;
-  font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted);
-  background: rgba(255,255,255,0.06); border: 1px solid var(--card-line);
-  border-radius: 999px; padding: 4px 11px; cursor: pointer; user-select: none;
-  transition: color .15s, border-color .15s;
-}
-.mode-chip:hover { color: var(--ink); border-color: var(--gold); }
-.mode-chip b { color: var(--gold); font-family: "Fredoka", sans-serif; }
 
 .reveal .progress { color: var(--gold); }
 
@@ -359,3 +345,20 @@ body.mode-neutral .v-neutral { display: revert; }
 .ticket { font-size: .52em; }
 .ticket .leg { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--card-line); padding: .14em 0; }
 .ticket .tot { display: flex; justify-content: space-between; font-family: "Fredoka", sans-serif; color: var(--gold); margin-top: .25em; }
+
+/* ===== mobile / narrow screens ===== */
+@media (max-width: 768px) {
+  .two-col, .parlay-grid, .coin-stage, .mock-grid, .gloss { grid-template-columns: 1fr !important; gap: 14px; }
+  .reveal h1 { font-size: 1.7em; }
+  .reveal h2 { font-size: 1.25em; }
+  .big-number { font-size: 2em; }
+  canvas.chart { height: 180px; }
+  .coin { width: 150px; height: 150px; }
+  .coin-face { font-size: 44px; }
+  .leg-control { flex-wrap: wrap; }
+  .pflow { gap: 6px; }
+  .pnode { width: 46%; min-height: 84px; }
+  .pnode.sim { width: 62%; }
+  .parrow { display: none; }
+  .footer-note { display: none; }
+}

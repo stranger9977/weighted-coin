@@ -9,33 +9,20 @@ const LEG_DECIMAL = 210 / 110;              // −110 in decimal odds = 1.9091
 const LEG_EDGE_FACTOR = 0.5 * LEG_DECIMAL;  // 0.95455: a fair coin priced at −110
 const SP_RATE = 1.10;                       // S&P 500 long-run average, ~10%/yr
 
-/* ---------- insider / neutral framing toggle ---------- */
-function currentMode() {
-  const urlMode = new URLSearchParams(location.search).get('mode');
-  if (urlMode === 'neutral' || urlMode === 'insider') return urlMode;
-  try { return localStorage.getItem('wc-mode') || 'insider'; } catch (e) { return 'insider'; }
-}
-function applyMode(mode) {
-  document.body.classList.toggle('mode-neutral', mode === 'neutral');
-  const chip = document.getElementById('modeChip');
-  if (chip) chip.innerHTML = 'Framing: <b>' + mode + '</b> · M';
-  try { localStorage.setItem('wc-mode', mode); } catch (e) {}
-}
-function toggleMode() {
-  applyMode(document.body.classList.contains('mode-neutral') ? 'insider' : 'neutral');
-}
-applyMode(currentMode()); // run before reveal paints, to avoid a flash of the wrong framing
-
 /* ---------- reveal init ---------- */
+// On phones use a taller, narrower canvas so the deck scales up bigger and reads in portrait.
+const wcMobile = window.matchMedia('(max-width: 768px)').matches;
 Reveal.initialize({
   hash: true,
   slideNumber: 'c/t',
   transition: 'slide',
   controls: true,
   progress: true,
-  width: 1280,
-  height: 760,
-  margin: 0.06,
+  width: wcMobile ? 840 : 1280,
+  height: wcMobile ? 1180 : 760,
+  margin: wcMobile ? 0.04 : 0.06,
+  minScale: 0.2,
+  maxScale: 2.0,
   plugins: [RevealNotes],
 });
 
@@ -637,9 +624,8 @@ function wire() {
 Reveal.on('ready', () => {
   wire();
   s2Render();
-  const chip = document.getElementById('modeChip');
-  if (chip) chip.onclick = toggleMode;
-  Reveal.addKeyBinding({ keyCode: 77, key: 'M', description: 'Toggle insider / neutral framing' }, toggleMode);
+  drawBell(simP);
+  drawLunch();
 });
 Reveal.on('slidechanged', (e) => {
   drawChart();

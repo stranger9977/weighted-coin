@@ -11,14 +11,9 @@ Built by a former teacher who now builds NFL betting models for a sportsbook. Th
 - Open the live link on a projector. Navigate with **← / →** arrow keys.
 - Press **S** for the speaker view (notes for every slide, in a separate window).
 - Press **F** for fullscreen, **ESC** for the slide overview.
-- It works on a phone too, so students can poke at the interactive parts themselves.
+- It works on a phone too (it uses a taller layout and stacks columns on small screens), so students can poke at the interactive parts themselves.
 
-### Insider vs. neutral framing (press **M**)
-The deck ships in two voices, toggled with the **M** key (or the chip in the bottom-left corner):
-- **Insider** (default) — you present as someone who builds the betting models, turned inside out. Maximum credibility.
-- **Neutral** — you present purely as *"a math teacher who knows how the industry works,"* with **no claim of working for a sportsbook**. Use this if your employer has policies about public affiliation, or to side-step any conflict-of-interest optics (the research flagged operator-tied messaging as a credibility risk).
-
-Your choice is remembered between sessions. You can also lock a version with a URL: `?mode=neutral` or `?mode=insider` — handy for a bookmark you'll present from. The corner chip is small and unobtrusive on a projector.
+The deck is written in a neutral voice throughout: you present as a math teacher who understands how the industry works, with no on-slide claim of working for a sportsbook. (The research flagged operator-tied messaging as a credibility risk, so this keeps you clear of it.) You can still disclose your background verbally if and when it helps.
 
 ### The interactive parts
 1. **The coin simulator.** Flip a fair coin and it feels fair. Then flip the toggle to "the book's coin" and run 100 flips. The bankroll line drifts down even though you still win about 48% of the time. That invisible drift is the lesson.
