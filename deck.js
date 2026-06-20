@@ -438,16 +438,29 @@ function updateParlay() {
     c.innerHTML = '<div class="coin-face heads">😎</div><div class="coin-face tails">🏦</div>';
     coins.appendChild(c);
   });
-  const tp = document.getElementById('trueProb'), op = document.getElementById('offerPay'), hd = document.getElementById('hold');
+  const fp = document.getElementById('fairPay'), op = document.getElementById('offerPay');
+  const tp = document.getElementById('trueProb'), hd = document.getElementById('hold');
+  const fbar = document.getElementById('fairBar'), obar = document.getElementById('offerBar');
   const res = document.getElementById('parlayResult');
   if (res) res.innerHTML = '&nbsp;';
-  if (!legs.length) { if (tp) tp.textContent = '-'; if (op) op.textContent = '-'; if (hd) hd.textContent = '-'; return; }
-  const trueProb = legs.reduce((a, l) => a * l.p, 1);
+  if (!legs.length) {
+    [fp, op, tp, hd].forEach(el => { if (el) el.textContent = '-'; });
+    if (fbar) fbar.style.width = '0%';
+    if (obar) obar.style.width = '0%';
+    return;
+  }
+  const stake = 10;
+  const prob = legs.reduce((a, l) => a * l.p, 1);
   const offeredDec = legs.reduce((a, l) => a * l.d, 1);
   const cut = 1 - legs.reduce((a, l) => a * l.p * l.d, 1);
-  if (tp) tp.textContent = fmtSmallPct(trueProb);
-  if (op) op.textContent = money(10 * offeredDec);
+  const fairReturn = stake / prob;      // total return that would break even
+  const offeredReturn = stake * offeredDec; // what the book actually pays back
+  if (fp) fp.textContent = money(fairReturn);
+  if (op) op.textContent = money(offeredReturn);
+  if (tp) tp.textContent = fmtSmallPct(prob);
   if (hd) hd.textContent = (cut * 100).toFixed(0) + '%';
+  if (fbar) fbar.style.width = '100%';
+  if (obar) obar.style.width = (offeredReturn / fairReturn * 100).toFixed(1) + '%';
 }
 function flipAllCoins() {
   if (parlayBusy) return;
@@ -474,11 +487,18 @@ function flipAllCoins() {
 /* =========================================================
    SLIDE 12 — no free lunch: keep betting and the spikes fade
    ========================================================= */
-const lunch = { bank: 100, start: 100, samples: [100], busy: false };
-const LUNCH_STAKE = 10, LUNCH_PROFIT = 30, LUNCH_P = 0.22; // bet $10 to win $30 (+300), real chance ~22%
+const lunch = { bank: 100, start: 100, samples: [100], busy: false, p: 0.22, profit: 30 };
+const LUNCH_STAKE = 10;
+function parlayEconomics() {                  // the exact parlay the user built on the previous slide
+  const legs = selectedLegs();
+  if (!legs.length) return { p: 0.22, profit: 30 };
+  const p = legs.reduce((a, l) => a * l.p, 1);
+  const dec = legs.reduce((a, l) => a * l.d, 1);
+  return { p, profit: LUNCH_STAKE * (dec - 1) };
+}
 function lunchStep() {
-  const win = Math.random() < LUNCH_P;
-  lunch.bank += win ? LUNCH_PROFIT : -LUNCH_STAKE;
+  const win = Math.random() < lunch.p;
+  lunch.bank += win ? lunch.profit : -LUNCH_STAKE;
   lunch.samples.push(lunch.bank);
 }
 function drawLunch() {
@@ -512,7 +532,18 @@ function updateLunchHud() {
   const n = document.getElementById('lunchBets');
   if (n) n.textContent = (lunch.samples.length - 1).toLocaleString();
 }
-function resetLunch() { lunch.bank = lunch.start; lunch.samples = [lunch.start]; drawLunch(); updateLunchHud(); }
+function updateLunchDesc() {
+  const pe = document.getElementById('lunchProb');
+  if (pe) pe.textContent = fmtSmallPct(lunch.p);
+  const pay = document.getElementById('lunchPay');
+  if (pay) pay.textContent = money(LUNCH_STAKE + lunch.profit);
+}
+function resetLunch() {
+  const e = parlayEconomics();
+  lunch.p = e.p; lunch.profit = e.profit;
+  lunch.bank = lunch.start; lunch.samples = [lunch.start];
+  drawLunch(); updateLunchHud(); updateLunchDesc();
+}
 function keepBetting() {
   if (lunch.busy) return;
   lunch.busy = true;
@@ -526,6 +557,27 @@ function keepBetting() {
     else { lunch.busy = false; if (btn) btn.disabled = false; }
   };
   tick();
+}
+
+/* =========================================================
+   KELLY criterion calculator (its own slide)
+   ========================================================= */
+function updateKelly() {
+  const el = document.getElementById('kellyRate');
+  if (!el) return;
+  const p = +el.value / 100;
+  document.getElementById('kellyRateVal').textContent = (+el.value).toFixed(1).replace(/\.0$/, '') + '%';
+  const b = 100 / 110;                 // net decimal odds for −110
+  const f = (b * p - (1 - p)) / b;     // Kelly fraction of bankroll
+  const frac = document.getElementById('kellyFrac');
+  const dol = document.getElementById('kellyDollar');
+  if (f <= 0) {
+    frac.textContent = 'bet $0'; frac.className = 'big-number house-color';
+    dol.textContent = 'A losing edge has no winning bet size.';
+  } else {
+    frac.textContent = (f * 100).toFixed(1) + '%'; frac.className = 'big-number you-color';
+    dol.textContent = 'On a $100 bankroll, that is ' + money(f * 100) + ' a bet.';
+  }
 }
 
 /* =========================================================
@@ -569,6 +621,9 @@ function wire() {
   const lunchResetBtn = document.getElementById('lunchResetBtn');
   if (lunchResetBtn) lunchResetBtn.onclick = resetLunch;
   if (document.getElementById('lunchChart')) resetLunch();
+
+  const kelly = document.getElementById('kellyRate');
+  if (kelly) { kelly.oninput = updateKelly; updateKelly(); }
 }
 
 Reveal.on('ready', () => {
@@ -581,7 +636,8 @@ Reveal.on('ready', () => {
 Reveal.on('slidechanged', (e) => {
   drawChart();
   drawBell(simP);
-  drawLunch();
+  if (e.currentSlide && e.currentSlide.querySelector('#lunchChart')) resetLunch();
+  else drawLunch();
   if (e.currentSlide && e.currentSlide.querySelector('#pflow')) buildPrice();
 });
 window.addEventListener('resize', () => { drawChart(); drawBell(simP); drawLunch(); });
