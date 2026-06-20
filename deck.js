@@ -487,8 +487,8 @@ function flipAllCoins() {
 /* =========================================================
    SLIDE 12 — no free lunch: keep betting and the spikes fade
    ========================================================= */
-const lunch = { bank: 100, start: 100, samples: [100], busy: false, p: 0.22, profit: 30 };
-const LUNCH_STAKE = 10;
+const lunch = { bank: 100, start: 100, bets: 0, samples: [100], sampleStep: 1, sinceSample: 0, busy: false, p: 0.22, profit: 30 };
+const LUNCH_STAKE = 10, LUNCH_CAP = 500;
 function parlayEconomics() {                  // the exact parlay the user built on the previous slide
   const legs = selectedLegs();
   if (!legs.length) return { p: 0.22, profit: 30 };
@@ -499,7 +499,12 @@ function parlayEconomics() {                  // the exact parlay the user built
 function lunchStep() {
   const win = Math.random() < lunch.p;
   lunch.bank += win ? lunch.profit : -LUNCH_STAKE;
-  lunch.samples.push(lunch.bank);
+  lunch.bets++;
+  if (++lunch.sinceSample >= lunch.sampleStep) {
+    lunch.sinceSample = 0;
+    lunch.samples.push(lunch.bank);
+    if (lunch.samples.length > LUNCH_CAP) { lunch.samples = lunch.samples.filter((_, i) => i % 2 === 0); lunch.sampleStep *= 2; }
+  }
 }
 function drawLunch() {
   const c = document.getElementById('lunchChart');
@@ -530,7 +535,7 @@ function updateLunchHud() {
   const b = document.getElementById('lunchBank');
   if (b) { b.textContent = fmtBank(lunch.bank); b.className = lunch.bank >= lunch.start ? 'you-color' : 'house-color'; }
   const n = document.getElementById('lunchBets');
-  if (n) n.textContent = (lunch.samples.length - 1).toLocaleString();
+  if (n) n.textContent = lunch.bets.toLocaleString();
 }
 function updateLunchDesc() {
   const pe = document.getElementById('lunchProb');
@@ -541,7 +546,7 @@ function updateLunchDesc() {
 function resetLunch() {
   const e = parlayEconomics();
   lunch.p = e.p; lunch.profit = e.profit;
-  lunch.bank = lunch.start; lunch.samples = [lunch.start];
+  lunch.bank = lunch.start; lunch.bets = 0; lunch.samples = [lunch.start]; lunch.sampleStep = 1; lunch.sinceSample = 0;
   drawLunch(); updateLunchHud(); updateLunchDesc();
 }
 function keepBetting() {
@@ -549,11 +554,14 @@ function keepBetting() {
   lunch.busy = true;
   const btn = document.getElementById('lunchBtn');
   if (btn) btn.disabled = true;
-  const target = (lunch.samples.length - 1) + 250; // 250 more bets, animated
+  // run enough bets to actually SEE several wins, scaled to how rare the parlay is
+  const runLen = Math.min(20000, Math.max(300, Math.round(8 / lunch.p)));
+  const target = lunch.bets + runLen;
+  const batchPer = Math.max(1, Math.ceil(runLen / 90)); // ~90 frames, roughly steady ~1.5s
   const tick = () => {
-    for (let k = 0; k < 2 && (lunch.samples.length - 1) < target; k++) lunchStep();
+    for (let k = 0; k < batchPer && lunch.bets < target; k++) lunchStep();
     drawLunch(); updateLunchHud();
-    if ((lunch.samples.length - 1) < target) requestAnimationFrame(tick);
+    if (lunch.bets < target) requestAnimationFrame(tick);
     else { lunch.busy = false; if (btn) btn.disabled = false; }
   };
   tick();
