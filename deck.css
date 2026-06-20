@@ -1,0 +1,243 @@
+/* ============================================================
+   The Weighted Coin — custom theme + interactive toy styling
+   Built on reveal.js (black theme) with overrides below.
+   ============================================================ */
+
+:root {
+  --bg: #0d1b2a;
+  --bg-2: #16263a;
+  --ink: #f4f6fb;
+  --muted: #9fb3c8;
+  --you: #38d39f;      /* you win / fair  */
+  --house: #ff5d73;    /* house wins / loss */
+  --gold: #ffd34e;     /* the coin */
+  --accent: #4ea8de;   /* links / accents */
+  --card: rgba(255,255,255,0.05);
+  --card-line: rgba(255,255,255,0.12);
+}
+
+.reveal {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  font-size: 36px;
+}
+.reveal .slides { text-align: left; }
+.reveal .slides section { top: 0 !important; }
+
+.reveal-viewport {
+  background: radial-gradient(1200px 800px at 70% -10%, #1d3756 0%, var(--bg) 55%) !important;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: "Fredoka", "Inter", sans-serif;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.reveal h1 { font-size: 2.1em; }
+.reveal h2 { font-size: 1.5em; }
+.reveal h3 { font-size: 1.05em; color: var(--gold); }
+
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal strong { color: var(--gold); }
+.reveal em { color: var(--accent); font-style: normal; font-weight: 600; }
+.reveal a { color: var(--accent); }
+
+.reveal ul { margin-left: 1em; }
+.reveal li { margin: 0.35em 0; }
+
+.tag {
+  display: inline-block;
+  font-family: "Fredoka", sans-serif;
+  font-size: 0.5em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  margin-bottom: 0.4em;
+}
+
+.big-number {
+  font-family: "Fredoka", sans-serif;
+  font-size: 2.6em;
+  font-weight: 700;
+  line-height: 1;
+}
+.you-color { color: var(--you); }
+.house-color { color: var(--house); }
+.gold-color { color: var(--gold); }
+.muted { color: var(--muted); font-size: 0.8em; }
+
+.callout {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-left: 5px solid var(--gold);
+  border-radius: 14px;
+  padding: 0.7em 1em;
+  margin: 0.5em 0;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  font-family: "Fredoka", sans-serif;
+  font-size: 0.62em;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55em 1.15em;
+  margin: 0.2em 0.25em;
+  cursor: pointer;
+  background: var(--accent);
+  color: #06121f;
+  font-weight: 600;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:active { transform: translateY(2px) scale(0.98); }
+.btn.gold { background: var(--gold); }
+.btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--card-line); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ============================================================
+   COIN SIMULATOR
+   ============================================================ */
+.coin-stage {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 28px;
+  align-items: center;
+}
+@media (max-width: 900px) { .coin-stage { grid-template-columns: 1fr; } }
+
+.coin-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+.coin {
+  width: 200px; height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.05s;
+}
+.coin.flipping { animation: spin 1.05s cubic-bezier(.3,.1,.2,1) forwards; }
+.coin.landed-you  { transform: rotateY(0deg); }
+.coin.landed-house{ transform: rotateY(180deg); }
+
+@keyframes spin {
+  0%   { transform: rotateY(0) translateY(0); }
+  50%  { transform: rotateY(900deg) translateY(-90px); }
+  100% { transform: rotateY(1800deg) translateY(0); }
+}
+@keyframes spin-house {
+  0%   { transform: rotateY(0) translateY(0); }
+  50%  { transform: rotateY(900deg) translateY(-90px); }
+  100% { transform: rotateY(1980deg) translateY(0); }
+}
+.coin.flipping.to-house { animation-name: spin-house; }
+
+.coin-face {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Fredoka", sans-serif;
+  font-size: 58px;
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 0 10px rgba(0,0,0,0.18), 0 14px 30px rgba(0,0,0,0.45);
+}
+.coin-face.heads {
+  background: radial-gradient(circle at 35% 30%, #ffe89a, var(--gold) 60%, #d9a920);
+  color: #5b4500;
+}
+.coin-face.tails {
+  background: radial-gradient(circle at 35% 30%, #c7d2dd, #8da3b8 60%, #5d7187);
+  color: #1a2735;
+  transform: rotateY(180deg);
+}
+.coin-face .lbl { display:block; font-size: 0.28em; letter-spacing: 0.05em; margin-top: 0.2em; opacity: 0.75; }
+
+.flash-win, .flash-loss {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 30px;
+  pointer-events: none; opacity: 0;
+}
+.flash-win.go  { animation: floatup 0.9s ease-out; color: var(--you); }
+.flash-loss.go { animation: floatup 0.9s ease-out; color: var(--house); }
+@keyframes floatup {
+  0% { opacity: 0; transform: translate(-50%, 0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -70px); }
+}
+
+.coin-readout { display: flex; flex-direction: column; gap: 10px; }
+.bankroll-num {
+  font-family: "Fredoka", sans-serif; font-size: 1.8em; font-weight: 700;
+}
+.tally { display:flex; gap: 18px; font-size: 0.7em; }
+.tally b { font-family: "Fredoka", sans-serif; }
+
+canvas.chart { width: 100%; height: 220px; background: var(--card); border-radius: 14px; border: 1px solid var(--card-line); }
+
+.toggle-row { display: flex; align-items: center; gap: 10px; font-size: 0.6em; margin-top: 6px; }
+.switch { position: relative; width: 52px; height: 28px; }
+.switch input { display: none; }
+.slider-ui {
+  position:absolute; inset:0; background: var(--house); border-radius: 999px; transition: 0.2s; cursor: pointer;
+}
+.slider-ui::before {
+  content:""; position:absolute; height: 22px; width: 22px; left: 3px; top: 3px;
+  background: #fff; border-radius: 50%; transition: 0.2s;
+}
+.switch input:checked + .slider-ui { background: var(--you); }
+.switch input:checked + .slider-ui::before { transform: translateX(24px); }
+
+/* ============================================================
+   PARLAY CALCULATOR
+   ============================================================ */
+.parlay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+@media (max-width: 900px){ .parlay-grid{ grid-template-columns: 1fr; } }
+
+.leg-control { display:flex; align-items:center; gap: 14px; margin-bottom: 14px; }
+input[type=range].legs {
+  -webkit-appearance: none; appearance: none; height: 10px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--you), var(--house)); flex: 1; outline: none;
+}
+input[type=range].legs::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gold); cursor: pointer; border: 3px solid #06121f;
+}
+.leg-count { font-family: "Fredoka", sans-serif; font-size: 1.4em; min-width: 2.2em; text-align:center; }
+
+.bar-row { margin: 0.55em 0; }
+.bar-row .bar-label { font-size: 0.62em; display:flex; justify-content: space-between; margin-bottom: 4px; }
+.bar-track { height: 26px; background: var(--card); border-radius: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
+.bar-fill.fair  { background: var(--you); }
+.bar-fill.offered { background: var(--gold); }
+
+.hold-box {
+  text-align:center; background: var(--card); border:1px solid var(--card-line);
+  border-radius: 16px; padding: 0.6em; margin-top: 0.4em;
+}
+.hold-box .big-number { color: var(--house); }
+
+/* ===== misc layout helpers ===== */
+.two-col { display:grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+@media (max-width:900px){ .two-col{ grid-template-columns:1fr; } }
+.center { text-align:center; }
+.small { font-size: 0.7em; }
+.xsmall { font-size: 0.55em; }
+.pill-list { list-style:none; margin-left:0; }
+.pill-list li { background: var(--card); border:1px solid var(--card-line); border-radius: 10px; padding: 0.4em 0.7em; margin: 0.35em 0; }
+.help-card {
+  background: var(--card); border: 1px solid var(--card-line); border-radius: 16px;
+  padding: 0.7em 1em; margin: 0.4em 0;
+}
+.help-card .num { font-family:"Fredoka",sans-serif; color: var(--you); font-size: 1.2em; }
+
+.footer-note {
+  position: fixed; bottom: 10px; right: 16px; font-size: 13px; color: var(--muted);
+  font-family: "Inter", sans-serif; z-index: 30;
+}
+
+.reveal .progress { color: var(--gold); }
