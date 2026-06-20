@@ -30,6 +30,28 @@
       </aside>
     </section>
 
+    <!-- GLOSSARY (introduce the words, reinforce them later) -->
+    <section>
+      <h2>First, the words. You'll see these all day.</h2>
+      <div class="gloss">
+        <div><span class="term">Odds</span> <span class="def">The price of a bet. Minus is the favorite, plus is the underdog.</span></div>
+        <div class="fragment"><span class="term">Implied probability</span> <span class="def">The chance hidden inside the odds. Every price is a probability in a costume.</span></div>
+        <div class="fragment"><span class="term">The vig</span> <span class="def">The book's built-in cut. It's why −110 means risk $110 to win $100.</span></div>
+        <div class="fragment"><span class="term">Expected value</span> <span class="def">What a bet is worth on average. For you, it's negative.</span></div>
+        <div class="fragment"><span class="term">Parlay</span> <span class="def">Several bets stacked so all must hit. Big payout, tiny chance.</span></div>
+        <div class="fragment"><span class="term">Hold</span> <span class="def">The slice of every dollar bet that the book expects to keep.</span></div>
+        <div class="fragment"><span class="term">Bankroll</span> <span class="def">The money you set aside to bet. When it's gone, you're done.</span></div>
+        <div class="fragment"><span class="term">Chasing</span> <span class="def">Betting more to win back losses. How a bad night becomes a bad year.</span></div>
+      </div>
+      <p class="xsmall muted" style="margin-top:.5em">Keep these in your back pocket. Every one shows up again before we're done.</p>
+      <aside class="notes">
+        Spend two minutes here, then call back to these words on purpose later (spaced repetition). When the vig
+        appears on the coin slide, say "there's our word." Same for implied probability on the odds slide, hold on
+        the parlay slide, and chasing on the warning-signs slide. Naming the idea first makes it stick when they
+        see it in action.
+      </aside>
+    </section>
+
     <!-- 2. THE HOOK -->
     <section data-auto-animate>
       <h2>Let's start with the fairest thing in the world.</h2>
@@ -62,14 +84,15 @@
       </aside>
     </section>
 
-    <!-- 3. THE TWIST: run it 100x -->
+    <!-- 3. THE TWIST: run it a lot -->
     <section>
-      <h2>Now let's play <em>a lot</em>. 100 flips.</h2>
+      <h2>Now let's play <em>a lot</em>.</h2>
       <div class="coin-stage">
         <div class="coin-wrap">
           <div class="bankroll-num">Your money: <span id="bank2" class="you-color">$100</span></div>
           <button class="btn gold" data-flip="2">Flip once</button>
           <button class="btn" data-flip100="2">Flip 100×</button>
+          <button class="btn" id="play1m">▶ Play to 1,000,000</button>
           <button class="btn ghost" data-reset="2">Reset</button>
           <div class="toggle-row">
             <label class="switch"><input type="checkbox" id="fairToggle2" checked><span class="slider-ui"></span></label>
@@ -83,14 +106,20 @@
             <span>You: <b class="you-color" id="wins2">0</b></span>
             <span>House: <b class="house-color" id="losses2">0</b></span>
           </p>
+          <p class="tally small">
+            <span>Your win rate: <b class="gold-color" id="winRate2">-</b> <span class="muted" id="winTarget2"></span></span>
+            <span>Average per flip: <b class="gold-color" id="avgFlip2">-</b></span>
+          </p>
         </div>
       </div>
-      <p class="fragment muted small">Flip the switch to <strong>OFF</strong>. That's the coin a real sportsbook uses. Run 100 flips again and watch.</p>
+      <p class="fragment muted small">Flip the switch to <strong>OFF</strong> for the book's coin, then hit <strong>Play</strong>. At a hundred flips it's luck. At a million, the win rate locks in and the money tells the truth.</p>
       <aside class="notes">
-        Run it first on the fair coin (switch on). The line wanders up and down but basically goes nowhere.
-        That's a true random walk. Then flip the switch to the book's coin and run 100 more. Now the line drifts
-        down. Same game, same $10 bets, you still win almost half the time, and you still slowly lose. Ask them
-        what changed. They can't see it on any single flip. That is the whole point.
+        Two things to show. First, run the fair coin a few hundred flips. The line wanders and might even be up,
+        which is exactly why short runs fool people. Then hit Play to a million on the fair coin and watch the win
+        rate pin to 50.00% even though the bankroll still wanders. Now flip to the book's coin and Play again. The
+        win rate settles near 47.6%, the average per flip settles near minus 48 cents, and the money falls in a
+        near straight line. That settling is the law of large numbers, and minus 48 cents a flip is the vig in
+        dollars. Short term is noise. Long term is math.
       </aside>
     </section>
 
@@ -224,19 +253,19 @@
       <span class="tag v-neutral">How the book prices a bet</span>
       <h2>The number isn't a guess. It's a <em>machine.</em></h2>
       <div class="pflow" id="pflow">
-        <div class="pnode"><b>Years of data</b><span>millions of past plays</span></div>
+        <div class="pnode" data-viz="data"><b>Years of data</b><canvas class="pviz"></canvas><span>millions of past plays</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode"><b>Rolling features</b><span>everything you'd see watching the game</span></div>
+        <div class="pnode" data-viz="features"><b>Rolling features</b><canvas class="pviz"></canvas><span>everything you'd see watching</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode"><b>Statistical models</b><span>predict every moving piece</span></div>
+        <div class="pnode" data-viz="models"><b>Statistical models</b><canvas class="pviz"></canvas><span>predict every moving piece</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode sim" data-sim="1"><b>Simulate 250,000×</b><canvas id="simChart"></canvas><span><i id="simCount">0</i> games played</span></div>
+        <div class="pnode sim" data-viz="sim"><b>Simulate 250,000×</b><canvas id="simChart" class="pviz"></canvas><span><i id="simCount">0</i> games</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode"><b>Range of outcomes</b><span>this <em>is</em> the fair odds</span></div>
+        <div class="pnode" data-viz="range"><b>Range of outcomes</b><canvas class="pviz"></canvas><span>this <em>is</em> the fair odds</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode"><b>Add the vig</b><span>the house tax on top</span></div>
+        <div class="pnode" data-viz="vig"><b>Add the vig</b><canvas class="pviz"></canvas><span>the house tax on top</span></div>
         <div class="parrow">➜</div>
-        <div class="pnode pprice"><b>The price you bet</b><span class="priceval">−110</span></div>
+        <div class="pnode pprice" data-viz="price"><b>The price you bet</b><span class="priceval">−110</span></div>
       </div>
       <div class="center">
         <button class="btn gold" id="buildPrice">▶ Build the price</button>
@@ -257,60 +286,79 @@
     <!-- 9. CAN YOU BEAT THE BOOK? -->
     <section>
       <h2>So can you <em>ever</em> beat it?</h2>
-      <p class="small">Honestly, yes. But there are only four ways, and all of them are brutally hard.</p>
+      <p class="small">Honestly, yes. But there are only four ways, and look at what they actually take.</p>
       <div class="two-col">
         <ul class="pill-list small">
-          <li class="fragment"><strong>1. Build a better model</strong> than the people who do this full time. Good luck.</li>
-          <li class="fragment"><strong>2. Know something nobody else does.</strong> Real insider info, which is usually illegal or against the rules.</li>
+          <li class="fragment"><strong>Build a better model</strong> <span class="skill math">MATH</span><span class="skill code">CODE</span> than the people who do this full time.</li>
+          <li class="fragment"><strong>Be faster than the line</strong> <span class="skill code">CODE</span> with software that grabs a stale price before it moves (front-running).</li>
         </ul>
         <ul class="pill-list small">
-          <li class="fragment"><strong>3. Be faster than the line.</strong> Grab a stale price before it updates. People call it front-running.</li>
-          <li class="fragment"><strong>4. Arbitrage.</strong> Bet both sides at different books and lock in a profit.</li>
+          <li class="fragment"><strong>Arbitrage</strong> <span class="skill code">CODE</span> that finds price gaps across books and hits them in a blink.</li>
+          <li class="fragment"><strong>Know something nobody else does.</strong> Real insider info, which is usually illegal. Not a real option.</li>
         </ul>
       </div>
-      <p class="fragment callout" style="border-left-color:var(--house)">
-        Here's the kicker. <strong class="house-color">Do any of these well, and the book limits or bans you.</strong>
-        Win too much and your max bet quietly drops to five dollars. The game is built so that being good at it gets you kicked out.
-      </p>
+      <p class="fragment callout">See the pattern? Three of the four are <strong>math and coding</strong>. If you actually want the edge, the real move isn't betting. It's getting good at math and computer science. Those are the skills that build the models and run the trading desks, and they pay a lot better than parlays.</p>
+      <p class="fragment callout" style="border-left-color:var(--house)">And the catch: <strong class="house-color">do any of these well and the book limits or bans you.</strong> Win too much and your max bet quietly drops to five dollars. Being good at it gets you kicked out.</p>
       <aside class="notes">
-        The honest "is there hope" slide. Don't pretend it's impossible, but be real. The four edges: a better
-        model, genuine private information (note that insider info is usually illegal or against terms), speed on
-        stale lines, and arbitrage across books. Then the punchline that lands hardest with competitive teenage
-        boys: sportsbooks profile customers and limit or ban the winners. They don't want action from everyone.
-        They want customers who lose. If you're good enough to win, you're not allowed to play. Let that sit.
+        The honest "is there hope" slide, pointed at something useful. Three of the four real edges are math and
+        code: modeling is statistics and programming, front-running and arbitrage are software. So the move that
+        actually beats the house is school, not the app. Then the twist that lands with competitive teens: even if
+        you get good, sportsbooks profile and limit or ban winners. They want customers who lose. If you're good
+        enough to win, you don't get to play. Point them at the skills, not the bet.
       </aside>
     </section>
 
-    <!-- 10. PARLAYS AS A SERIES OF COIN FLIPS -->
+    <!-- 10. BUILD A PARLAY (real odds, coins weighted to each leg) -->
     <section>
-      <h2>A parlay is just a row of coin flips.</h2>
-      <p class="small">Every coin has to land on <em>YOU</em>. Miss one and the whole thing loses. Add flips:</p>
-      <div class="leg-control">
-        <span class="small">Flips in the parlay:</span>
-        <input type="range" min="2" max="8" value="4" class="legs" id="legs">
-        <span class="leg-count gold-color" id="legCount">4</span>
-        <button class="btn gold" id="flipAll" style="margin-left:10px">Flip all</button>
-      </div>
-      <div class="parlay-coins" id="parlayCoins"></div>
-      <p class="small" id="parlayResult" style="min-height:1.2em">&nbsp;</p>
-      <div class="two-col" style="margin-top:.2em">
-        <div class="callout small">
-          <p style="margin:.1em 0">Chance all <b id="legCount2">4</b> land on YOU: <strong class="you-color" id="trueProb">6.3%</strong></p>
-          <p style="margin:.1em 0">A fair payout on $10 would be <strong class="you-color" id="fairPay">$150</strong>.</p>
-          <p style="margin:.1em 0">What the book actually pays you: <strong class="gold-color" id="offerPay">$123</strong>.</p>
-        </div>
-        <div class="hold-box">
-          <p class="small muted" style="margin:0">The book's expected cut of your $10:</p>
-          <p class="big-number" id="hold">17%</p>
+      <h2>Build a parlay.</h2>
+      <p class="small">Tap legs to add them. Each one is a coin, and the longer the odds, the more it's tilted to the house. Every coin has to land on <em>YOU</em>.</p>
+      <div class="two-col" style="align-items:start">
+        <div class="leg-list" id="legList"></div>
+        <div>
+          <div class="parlay-coins" id="parlayCoins"></div>
+          <button class="btn gold" id="flipAll">Flip the parlay</button>
+          <p class="small" id="parlayResult" style="min-height:1.2em">&nbsp;</p>
+          <div class="callout small">
+            <p style="margin:.15em 0">Real chance it all hits: <strong class="you-color" id="trueProb">-</strong></p>
+            <p style="margin:.15em 0">A $10 ticket would pay <strong class="gold-color" id="offerPay">-</strong></p>
+            <p style="margin:.15em 0">The book's cut of your $10: <strong class="house-color" id="hold">-</strong></p>
+          </div>
         </div>
       </div>
-      <p class="xsmall muted fragment">One flip, the cut is about 4.5%. Stack the flips and the cut piles up. Eight flips and the house keeps almost a third of every dollar. That's why every promo pushes a parlay.</p>
+      <p class="xsmall muted fragment">Bet a little, win a lot. That's the pitch, and it feels great. But every longshot you add to chase the big number shoves your real chance toward zero and grows the book's cut. The "fun" parlay is the worst bet on the screen.</p>
       <aside class="notes">
-        This ties the parlay straight back to the coin. Drag from 2 to 8 flips and hit Flip all. They'll watch a
-        parlay miss almost every time, because all the coins have to land your way at once. Real chance is
-        0.5^flips. The cut formula on screen is exact: 1 − 0.95455^flips, so it climbs from about 4.5% at one
-        flip to roughly 17% at four and about 31% at eight. The lesson: parlays feel like a lottery ticket and
-        get marketed the hardest precisely because they are the most profitable for the book.
+        The real-money version of the coin slide. Default is a favorite, a coin flip, and a +300 longshot, the
+        classic ticket. Tap legs on and off. Add the +2000 and watch the payout look incredible while the real
+        chance basically vanishes and the cut balloons. Hit Flip the parlay a few times so they feel how rarely
+        every leg lands. Real chance is the product of each leg's true chance. The cut is 1 minus the product of
+        (true chance × decimal payout) per leg, so longshots and extra legs both make it worse. The point: "bet a
+        little to win a lot" is exactly where the house makes the most.
+      </aside>
+    </section>
+
+    <!-- NO FREE LUNCH (keep betting and the spikes fade) -->
+    <section>
+      <h2>"But when I hit, I <em>hit.</em>"</h2>
+      <p class="small">True. Betting $10 to win $30 on a longshot gives you real spikes. Watch what happens when you keep going.</p>
+      <div class="coin-stage">
+        <div class="coin-wrap">
+          <div class="bankroll-num">Your money: <span id="lunchBank" class="you-color">$100</span></div>
+          <button class="btn gold" id="lunchBtn">Keep betting</button>
+          <button class="btn ghost" id="lunchResetBtn">Reset</button>
+          <p class="tally small"><span>Bets made: <b id="lunchBets">0</b></span></p>
+        </div>
+        <div>
+          <canvas class="chart" id="lunchChart"></canvas>
+          <p class="xsmall muted" style="margin-top:6px">Every spike is a real win. Notice they never last, because you put the money right back in.</p>
+        </div>
+      </div>
+      <p class="fragment callout">The wins are real. They just don't <em>stay</em>, because the whole machine is built to keep you betting. Play long enough and the math always wins. There is no free lunch.</p>
+      <aside class="notes">
+        This answers the "but I've hit big before" reply head on. Each bet is $10 to win $30, a +300 longshot with
+        a real chance around 22 percent, so the line spikes up whenever one lands. Hit Keep betting a couple
+        times. The spikes are real and feel amazing, and the line still grinds down, because the average bet loses
+        money and you keep reinvesting the wins. Tie it back: keeping you betting is the entire point, which is why
+        the promos and notifications exist. Nobody hands out free money.
       </aside>
     </section>
 
@@ -331,7 +379,6 @@
           <li class="fragment"><strong>Push notifications.</strong> Timed to pull you back. The app wants a habit, not a customer.</li>
         </ul>
       </div>
-      <p class="fragment callout">A casino has clocks and exits. The app in your pocket has neither, and it knows your name.</p>
       <aside class="notes">
         This is where knowing the inside pays off. Speak plainly about the design intent: retention, time on app,
         deposit frequency, win-back campaigns after someone goes quiet. You don't need to leak anything. The
@@ -353,6 +400,7 @@
           </ul>
         </div>
         <div>
+          <div class="brain">🧠</div>
           <div class="callout">
             <p class="small">Since betting went mobile in <strong>2018</strong>, the fastest-rising group of problem gamblers is</p>
             <p class="big-number house-color">young men</p>
@@ -365,6 +413,36 @@
         reinforcement. The near-miss effect is well documented in gambling research. PASPA was struck down in May
         2018, which opened mobile sports betting state by state. The impulse-control point is about how the
         prefrontal cortex is still developing in teens.
+      </aside>
+    </section>
+
+    <!-- WHY PLAY A RIGGED GAME + RESPONSIBLE BETTING -->
+    <section>
+      <h2>So why play a game that's <em>rigged against you?</em></h2>
+      <p class="small">If you're going to do it anyway, here's what doing it responsibly actually looks like.</p>
+      <div class="two-col">
+        <ul class="pill-list small">
+          <li class="fragment">Set a hard limit <em>before</em> you start. Money you're totally fine losing, like a concert ticket.</li>
+          <li class="fragment">Never chase. The lost money is gone. Betting more to win it back is how it spirals.</li>
+          <li class="fragment">Never bet borrowed money. Ever.</li>
+          <li class="fragment">Treat it as entertainment you pay for, not a way to make money.</li>
+        </ul>
+        <div>
+          <div class="callout">
+            <h3>What the math says: the Kelly criterion</h3>
+            <p class="small">Pros use a formula called <em>Kelly</em> to size a bet to their edge. Bigger edge, bigger bet.</p>
+            <p class="small fragment">Your edge against the book is <strong class="house-color">negative</strong>. Plug that in and Kelly gives one answer:</p>
+            <p class="big-number gold-color fragment">bet $0</p>
+          </div>
+        </div>
+      </div>
+      <p class="fragment callout" style="border-left-color:var(--you)">Here's the honest version. You can do it carefully, with limits, for fun. But the math isn't shy: the only move that always wins is not playing.</p>
+      <aside class="notes">
+        Don't moralize, just be straight. If they'll bet someday, harm reduction is real: a fixed limit they can
+        lose without pain, never chasing, never borrowed money, treat it like paying for entertainment. The Kelly
+        criterion is the honest math punchline. It sizes a bet to your edge, and since your edge versus the book is
+        negative, Kelly literally says stake zero. So the responsible amount and the mathematically optimal amount
+        are the same number: nothing. The best bet is the one you don't make.
       </aside>
     </section>
 

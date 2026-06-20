@@ -83,25 +83,56 @@ function flipSlide1() {
 /* =========================================================
    SLIDE 3 — the bankroll grind (fair vs the book's coin)
    ========================================================= */
-const s2 = { bank: 100, start: 100, bet: 10, history: [100], wins: 0, losses: 0, fair: true };
+const SAMPLE_CAP = 400; // max points kept for the chart, so a million flips stays fast
+const s2 = {
+  bank: 100, start: 100, bet: 10, wins: 0, losses: 0, fair: true,
+  samples: [100], sampleStep: 1, sinceSample: 0, playing: false,
+};
 
 function s2PlayerWins() { return Math.random() < (s2.fair ? 0.5 : PLAYER_WIN_PROB); }
+function s2RecordSample() {
+  if (++s2.sinceSample >= s2.sampleStep) {
+    s2.sinceSample = 0;
+    s2.samples.push(s2.bank);
+    if (s2.samples.length > SAMPLE_CAP) {
+      s2.samples = s2.samples.filter((_, i) => i % 2 === 0); // thin out, keep every other point
+      s2.sampleStep *= 2;
+    }
+  }
+}
 function s2ApplyFlip() {
   if (s2PlayerWins()) { s2.bank += s2.bet; s2.wins++; }
   else { s2.bank -= s2.bet; s2.losses++; }
-  s2.history.push(s2.bank);
+  s2RecordSample();
 }
+function fmtBank(v) { return (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString(); }
 function s2Render() {
   const bankEl = document.getElementById('bank2');
   if (!bankEl) return;
-  bankEl.textContent = '$' + s2.bank;
+  bankEl.textContent = fmtBank(s2.bank);
   bankEl.className = s2.bank >= s2.start ? 'you-color' : (s2.bank <= 0 ? 'house-color' : 'gold-color');
-  document.getElementById('flips2').textContent = s2.wins + s2.losses;
-  document.getElementById('wins2').textContent = s2.wins;
-  document.getElementById('losses2').textContent = s2.losses;
+  const total = s2.wins + s2.losses;
+  document.getElementById('flips2').textContent = total.toLocaleString();
+  document.getElementById('wins2').textContent = s2.wins.toLocaleString();
+  document.getElementById('losses2').textContent = s2.losses.toLocaleString();
+  const wr = document.getElementById('winRate2');
+  const af = document.getElementById('avgFlip2');
+  if (wr) wr.textContent = total ? (s2.wins / total * 100).toFixed(2) + '%' : '-';
+  if (af) {
+    const avg = total ? (s2.bank - s2.start) / total : 0;
+    af.textContent = total ? (avg < 0 ? '-$' : '$') + Math.abs(avg).toFixed(2) : '-';
+  }
   drawChart();
 }
-function s2Reset() { s2.bank = s2.start; s2.history = [s2.start]; s2.wins = 0; s2.losses = 0; s2Render(); }
+function s2SetTargets() {
+  const wt = document.getElementById('winTarget2');
+  if (wt) wt.textContent = s2.fair ? '(settles near 50%)' : '(settles near 47.6%)';
+}
+function s2Reset() {
+  s2.bank = s2.start; s2.samples = [s2.start]; s2.sampleStep = 1; s2.sinceSample = 0;
+  s2.wins = 0; s2.losses = 0;
+  s2Render(); s2SetTargets();
+}
 function flipSlide2Once() { s2ApplyFlip(); s2Render(); }
 function flipSlide2Many(n) {
   let i = 0;
@@ -110,6 +141,24 @@ function flipSlide2Many(n) {
     for (let k = 0; k < chunk; k++) { s2ApplyFlip(); i++; }
     s2Render();
     if (i < n) requestAnimationFrame(step);
+  };
+  step();
+}
+function playToMillion() {
+  if (s2.playing) return;
+  let target = 1000000;
+  if (s2.wins + s2.losses >= target) target = (s2.wins + s2.losses) + 1000000;
+  s2.playing = true;
+  const btn = document.getElementById('play1m');
+  if (btn) { btn.disabled = true; btn.textContent = 'Playing…'; }
+  let perFrame = 250;
+  const step = () => {
+    const batch = Math.min(perFrame, target - (s2.wins + s2.losses));
+    for (let k = 0; k < batch; k++) s2ApplyFlip();
+    perFrame = Math.min(25000, Math.floor(perFrame * 1.4)); // accelerate the fast-forward
+    s2Render();
+    if (s2.wins + s2.losses < target) requestAnimationFrame(step);
+    else { s2.playing = false; if (btn) { btn.disabled = false; btn.textContent = '▶ Play to 1,000,000'; } }
   };
   step();
 }
@@ -123,7 +172,7 @@ function drawChart() {
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, w, h);
-  const data = s2.history, pad = 14;
+  const data = s2.samples, pad = 14;
   const maxV = Math.max(s2.start * 1.4, ...data, 20);
   const minV = Math.min(0, ...data);
   const xFor = i => pad + (i / Math.max(1, data.length - 1)) * (w - 2 * pad);
@@ -233,6 +282,97 @@ function runSim() {
   requestAnimationFrame(frame);
 }
 let priceGen = 0;
+function vizCtx(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w) return null;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+  return { ctx, w, h };
+}
+function drawViz(canvas, type, p) {
+  const c = vizCtx(canvas); if (!c) return;
+  const { ctx, w, h } = c;
+  if (type === 'data') {                          // rows of data points filling in
+    const cols = 14, rows = 4, total = cols * rows, lit = Math.floor(p * total);
+    const gx = w / cols, gy = h / rows, r = Math.min(gx, gy) * 0.26;
+    for (let i = 0; i < total; i++) {
+      const cx = (i % cols + 0.5) * gx, cy = (Math.floor(i / cols) + 0.5) * gy;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7);
+      ctx.fillStyle = i < lit ? 'rgba(78,168,222,0.95)' : 'rgba(255,255,255,0.10)';
+      ctx.fill();
+    }
+  } else if (type === 'features') {               // rolling sparklines drawing left to right
+    const cols2 = ['rgba(56,211,159,0.9)', 'rgba(78,168,222,0.9)', 'rgba(255,211,78,0.9)'];
+    for (let k = 0; k < 3; k++) {
+      ctx.strokeStyle = cols2[k]; ctx.lineWidth = 2; ctx.beginPath();
+      const maxX = p * w;
+      for (let x = 0; x <= maxX; x += 3) {
+        const y = h / 2 + Math.sin(x * 0.09 + k * 2) * (h * 0.2) * Math.sin(x * 0.014 + k);
+        x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+    }
+  } else if (type === 'models') {                 // scatter points with a fitted line sweeping in
+    const n = 16;
+    for (let i = 0; i < n; i++) {
+      if (i / n > p) break;
+      const x = (i + 0.5) / n * w;
+      const base = h * 0.82 - (x / w) * (h * 0.62);
+      const noise = Math.sin(i * 23.3) * Math.cos(i * 7.1) * h * 0.12;
+      ctx.beginPath(); ctx.arc(x, base + noise, 2.2, 0, 7);
+      ctx.fillStyle = 'rgba(78,168,222,0.85)'; ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(255,211,78,0.95)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, h * 0.82); ctx.lineTo(p * w, h * 0.82 - p * (h * 0.62)); ctx.stroke();
+  } else if (type === 'range') {                   // a confidence band widening on a number line
+    const cy = h * 0.6, cx = w / 2, half = (w * 0.4) * p;
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(w * 0.08, cy); ctx.lineTo(w * 0.92, cy); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,211,78,0.30)';
+    ctx.fillRect(cx - half, cy - h * 0.24, half * 2, h * 0.48);
+    ctx.fillStyle = 'rgba(255,211,78,1)';
+    ctx.fillRect(cx - 1.5, cy - h * 0.32, 3, h * 0.64);
+  } else if (type === 'vig') {                      // a fair bar with a gold "tax" slice added on the end
+    const barY = h * 0.34, barH = h * 0.34, full = w * 0.84, x0 = w * 0.08;
+    ctx.fillStyle = 'rgba(78,168,222,0.85)';
+    ctx.fillRect(x0, barY, full * 0.78, barH);
+    ctx.fillStyle = 'rgba(255,211,78,1)';
+    ctx.fillRect(x0 + full * 0.78, barY, full * 0.22 * p, barH);
+  }
+}
+function animateCanvas(canvas, type, gen, dur) {
+  let start = null;
+  const frame = (now) => {
+    if (gen !== priceGen) return;
+    if (start === null) start = now;
+    const p = Math.min(1, (now - start) / dur);
+    drawViz(canvas, type, p);
+    if (p < 1) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+function animatePrice(gen) {                        // the final box counts in to −110
+  const el = document.querySelector('#pflow .priceval');
+  if (!el) return;
+  const from = -260, to = -110, dur = 850;
+  let start = null;
+  const frame = (now) => {
+    if (gen !== priceGen) return;
+    if (start === null) start = now;
+    const p = Math.min(1, (now - start) / dur);
+    el.textContent = '−' + Math.abs(Math.round(from + (to - from) * p));
+    if (p < 1) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+function startViz(node, type, gen) {
+  if (type === 'price') return animatePrice(gen);
+  if (type === 'sim') return runSim();
+  const canvas = node.querySelector('canvas');
+  if (canvas) animateCanvas(canvas, type, gen, 1100);
+}
 function buildPrice() {
   const flow = document.getElementById('pflow');
   if (!flow) return;
@@ -244,70 +384,148 @@ function buildPrice() {
     if (gen !== priceGen || i >= items.length) return;
     const el = items[i];
     el.classList.add('show');
-    if (el.dataset.sim === '1') runSim();
+    const viz = el.dataset ? el.dataset.viz : null;
+    if (viz) startViz(el, viz, gen);
     i++;
-    setTimeout(reveal, el.classList.contains('parrow') ? 200 : 480);
+    setTimeout(reveal, el.classList.contains('parrow') ? 200 : 520);
   };
   reveal();
 }
 
 /* =========================================================
-   SLIDE 10 — parlay as a row of coin flips
+   SLIDE 11 — build a parlay (real odds, coins weighted to each leg)
    ========================================================= */
-function buildParlayCoins(n) {
-  const box = document.getElementById('parlayCoins');
+const LEGS = [
+  { label: 'Chiefs to win', odds: '−200', d: 1.50, p: 0.65 },
+  { label: 'Game over 47.5 points', odds: '−110', d: 1.909, p: 0.50 },
+  { label: 'Kelce scores a TD', odds: '+110', d: 2.10, p: 0.45 },
+  { label: 'Mahomes 300+ pass yards', odds: '+130', d: 2.30, p: 0.42 },
+  { label: 'A kickoff returned for a TD', odds: '+300', d: 4.00, p: 0.22 },
+  { label: 'Exact final score 27-24', odds: '+2000', d: 21.0, p: 0.03 },
+];
+const parlaySel = new Set([0, 1, 4]); // a favorite, a coin flip, and a longshot: the classic trap
+let parlayBusy = false;
+
+function selectedLegs() { return [...parlaySel].sort((a, b) => a - b).map(i => LEGS[i]); }
+function fmtSmallPct(p) {
+  const v = p * 100;
+  if (v >= 1) return v.toFixed(1) + '%';
+  if (v >= 0.1) return v.toFixed(2) + '%';
+  return v.toFixed(3) + '%';
+}
+function buildLegList() {
+  const box = document.getElementById('legList');
   if (!box) return;
   box.innerHTML = '';
-  for (let i = 0; i < n; i++) {
+  LEGS.forEach((leg, i) => {
+    const chip = document.createElement('button');
+    chip.className = 'leg-chip' + (parlaySel.has(i) ? ' on' : '');
+    chip.innerHTML = '<span>' + leg.label + '</span><b>' + leg.odds + '</b>';
+    chip.onclick = () => { parlaySel.has(i) ? parlaySel.delete(i) : parlaySel.add(i); updateParlay(); };
+    box.appendChild(chip);
+  });
+}
+function updateParlay() {
+  if (!document.getElementById('legList')) return;
+  buildLegList();
+  const legs = selectedLegs();
+  const coins = document.getElementById('parlayCoins');
+  coins.innerHTML = '';
+  legs.forEach(leg => {
     const c = document.createElement('div');
     c.className = 'coin mini-coin landed-you';
+    c.dataset.p = leg.p;
     c.innerHTML = '<div class="coin-face heads">😎</div><div class="coin-face tails">🏦</div>';
-    box.appendChild(c);
-  }
+    coins.appendChild(c);
+  });
+  const tp = document.getElementById('trueProb'), op = document.getElementById('offerPay'), hd = document.getElementById('hold');
+  const res = document.getElementById('parlayResult');
+  if (res) res.innerHTML = '&nbsp;';
+  if (!legs.length) { if (tp) tp.textContent = '-'; if (op) op.textContent = '-'; if (hd) hd.textContent = '-'; return; }
+  const trueProb = legs.reduce((a, l) => a * l.p, 1);
+  const offeredDec = legs.reduce((a, l) => a * l.d, 1);
+  const cut = 1 - legs.reduce((a, l) => a * l.p * l.d, 1);
+  if (tp) tp.textContent = fmtSmallPct(trueProb);
+  if (op) op.textContent = money(10 * offeredDec);
+  if (hd) hd.textContent = (cut * 100).toFixed(0) + '%';
 }
-let parlayBusy = false;
 function flipAllCoins() {
   if (parlayBusy) return;
   const coins = document.querySelectorAll('#parlayCoins .mini-coin');
   if (!coins.length) return;
   parlayBusy = true;
   const result = document.getElementById('parlayResult');
-  result.innerHTML = '&nbsp;';
+  if (result) result.innerHTML = '&nbsp;';
   let allWin = true;
   coins.forEach(coin => {
-    const win = Math.random() < 0.5; // each leg is a fair coin
+    const p = parseFloat(coin.dataset.p || '0.5');
+    const win = Math.random() < p;          // each leg weighted to its real chance
     if (!win) allWin = false;
     animateCoin(coin, win);
   });
   setTimeout(() => {
-    result.innerHTML = allWin
-      ? '<span class="you-color">All of them hit. You win. Notice how rarely that happens.</span>'
-      : '<span class="house-color">One missed, so the whole parlay loses. That\'s the usual ending.</span>';
+    if (result) result.innerHTML = allWin
+      ? '<span class="you-color">Every leg hit. You win. Now hit it again and see how often that happens.</span>'
+      : '<span class="house-color">A leg missed, so the whole parlay is gone.</span>';
     parlayBusy = false;
   }, 1150);
 }
-function updateParlay() {
-  const legsEl = document.getElementById('legs');
-  if (!legsEl) return;
-  const legs = +legsEl.value;
-  document.getElementById('legCount').textContent = legs;
-  const lc2 = document.getElementById('legCount2');
-  if (lc2) lc2.textContent = legs;
 
-  const trueProb = Math.pow(0.5, legs);
-  const hold = 1 - Math.pow(LEG_EDGE_FACTOR, legs);
-  const offeredProfit = 10 * (Math.pow(LEG_DECIMAL, legs) - 1);
-  const fairProfit = 10 * (Math.pow(2, legs) - 1);
-
-  document.getElementById('trueProb').textContent =
-    (trueProb * 100 >= 1 ? (trueProb * 100).toFixed(1) : (trueProb * 100).toFixed(2)) + '%';
-  document.getElementById('hold').textContent = (hold * 100).toFixed(0) + '%';
-  document.getElementById('fairPay').textContent = money(fairProfit);
-  document.getElementById('offerPay').textContent = money(offeredProfit);
-
-  buildParlayCoins(legs);
-  const res = document.getElementById('parlayResult');
-  if (res) res.innerHTML = '&nbsp;';
+/* =========================================================
+   SLIDE 12 — no free lunch: keep betting and the spikes fade
+   ========================================================= */
+const lunch = { bank: 100, start: 100, samples: [100], busy: false };
+const LUNCH_STAKE = 10, LUNCH_PROFIT = 30, LUNCH_P = 0.22; // bet $10 to win $30 (+300), real chance ~22%
+function lunchStep() {
+  const win = Math.random() < LUNCH_P;
+  lunch.bank += win ? LUNCH_PROFIT : -LUNCH_STAKE;
+  lunch.samples.push(lunch.bank);
+}
+function drawLunch() {
+  const c = document.getElementById('lunchChart');
+  if (!c) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = c.clientWidth, h = c.clientHeight;
+  if (!w) return;
+  c.width = w * dpr; c.height = h * dpr;
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+  const data = lunch.samples, pad = 16;
+  const maxV = Math.max(lunch.start * 1.2, ...data), minV = Math.min(0, ...data);
+  const xFor = i => pad + (i / Math.max(1, data.length - 1)) * (w - 2 * pad);
+  const yFor = v => h - pad - ((v - minV) / (maxV - minV)) * (h - 2 * pad);
+  ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad, yFor(lunch.start)); ctx.lineTo(w - pad, yFor(lunch.start)); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '12px Inter, sans-serif';
+  ctx.fillText('start $' + lunch.start, pad + 2, yFor(lunch.start) - 5);
+  const up = data[data.length - 1] >= lunch.start;
+  ctx.strokeStyle = up ? '#38d39f' : '#ff5d73'; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  data.forEach((v, i) => { i ? ctx.lineTo(xFor(i), yFor(v)) : ctx.moveTo(xFor(i), yFor(v)); });
+  ctx.stroke();
+  ctx.lineTo(xFor(data.length - 1), yFor(minV)); ctx.lineTo(xFor(0), yFor(minV)); ctx.closePath();
+  ctx.fillStyle = up ? 'rgba(56,211,159,0.12)' : 'rgba(255,93,115,0.12)'; ctx.fill();
+}
+function updateLunchHud() {
+  const b = document.getElementById('lunchBank');
+  if (b) { b.textContent = fmtBank(lunch.bank); b.className = lunch.bank >= lunch.start ? 'you-color' : 'house-color'; }
+  const n = document.getElementById('lunchBets');
+  if (n) n.textContent = (lunch.samples.length - 1).toLocaleString();
+}
+function resetLunch() { lunch.bank = lunch.start; lunch.samples = [lunch.start]; drawLunch(); updateLunchHud(); }
+function keepBetting() {
+  if (lunch.busy) return;
+  lunch.busy = true;
+  const btn = document.getElementById('lunchBtn');
+  if (btn) btn.disabled = true;
+  const target = (lunch.samples.length - 1) + 250; // 250 more bets, animated
+  const tick = () => {
+    for (let k = 0; k < 2 && (lunch.samples.length - 1) < target; k++) lunchStep();
+    drawLunch(); updateLunchHud();
+    if ((lunch.samples.length - 1) < target) requestAnimationFrame(tick);
+    else { lunch.busy = false; if (btn) btn.disabled = false; }
+  };
+  tick();
 }
 
 /* =========================================================
@@ -329,6 +547,9 @@ function wire() {
       s2Reset();
     };
   }
+  const play = document.getElementById('play1m');
+  if (play) play.onclick = playToMillion;
+  s2SetTargets();
 
   const sp = document.getElementById('spAmount');
   if (sp) { sp.oninput = updateSP; updateSP(); }
@@ -339,10 +560,15 @@ function wire() {
   const buildBtn = document.getElementById('buildPrice');
   if (buildBtn) buildBtn.onclick = buildPrice;
 
-  const legs = document.getElementById('legs');
-  if (legs) { legs.oninput = updateParlay; updateParlay(); }
+  if (document.getElementById('legList')) updateParlay();
   const flipAll = document.getElementById('flipAll');
   if (flipAll) flipAll.onclick = flipAllCoins;
+
+  const lunchBtn = document.getElementById('lunchBtn');
+  if (lunchBtn) lunchBtn.onclick = keepBetting;
+  const lunchResetBtn = document.getElementById('lunchResetBtn');
+  if (lunchResetBtn) lunchResetBtn.onclick = resetLunch;
+  if (document.getElementById('lunchChart')) resetLunch();
 }
 
 Reveal.on('ready', () => {
@@ -355,6 +581,7 @@ Reveal.on('ready', () => {
 Reveal.on('slidechanged', (e) => {
   drawChart();
   drawBell(simP);
+  drawLunch();
   if (e.currentSlide && e.currentSlide.querySelector('#pflow')) buildPrice();
 });
-window.addEventListener('resize', () => { drawChart(); drawBell(simP); });
+window.addEventListener('resize', () => { drawChart(); drawBell(simP); drawLunch(); });
