@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Weighted Coin — How Betting Really Works</title>
+  <title>The Weighted Coin: How Betting Really Works</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,22 +21,22 @@
     <section data-auto-animate>
       <span class="tag">A math class disguised as a magic trick</span>
       <h1>The Weighted&nbsp;Coin</h1>
-      <h2 class="muted" style="margin-top:.2em">How sports betting <em>really</em> works</h2>
-      <p class="small gold-color v-insider" style="margin-top:.7em">Told by someone who builds the betting models — turned inside out.</p>
+      <h2 class="muted" style="margin-top:.2em">How sports betting really works</h2>
+      <p class="small gold-color v-insider" style="margin-top:.7em">Told by someone who builds the betting models, turned inside out.</p>
       <p class="small gold-color v-neutral" style="margin-top:.7em">Told by a math teacher who knows exactly how the industry works.</p>
-      <p class="small" style="margin-top:.9em">Press <strong>→</strong> to begin. Press <strong>S</strong> for speaker notes.</p>
+      <p class="small" style="margin-top:.9em">Press the right arrow to begin. Press <strong>S</strong> for speaker notes.</p>
       <aside class="notes">
-        Opening move: introduce yourself as the math teacher first. Save the reveal — "I build the betting
-        models for a sportsbook for a living" — for slide 7 or whenever it lands hardest. The whole talk is
-        more credible BECAUSE you're an insider, but don't lead with it like a brag. Lead as the person who
-        wants them to see the machine clearly. Never glamorize the job.
+        Open as the math teacher first. Save the reveal ("I build the betting models for a sportsbook")
+        for the pricing slide, or wherever it lands hardest. The talk is more credible because you know the
+        inside, but don't lead with it like a brag. Lead as the person who wants them to see the machine
+        clearly. Never make the job sound cool.
       </aside>
     </section>
 
     <!-- 2. THE HOOK -->
     <section data-auto-animate>
       <h2>Let's start with the fairest thing in the world.</h2>
-      <p>A coin flip. <em>50/50.</em> Nobody can cheat a coin flip&hellip; right?</p>
+      <p>A coin flip. Fifty-fifty. Nobody can rig a coin flip. Right?</p>
       <div class="coin-stage" style="margin-top:.4em">
         <div class="coin-wrap">
           <div class="flash-win" id="flash-win-1">+$10</div>
@@ -49,8 +49,8 @@
         </div>
         <div class="coin-readout">
           <div class="callout small">
-            You bet <strong>$10</strong> on <em>YOU</em> (😎) every flip. Win = +$10, lose = −$10.
-            Totally fair. Let's see how you do.
+            You bet <strong>$10</strong> on <em>YOU</em> (😎) every flip. Win and you get $10. Lose and you
+            drop $10. Totally fair. Let's see how you do.
           </div>
           <div class="tally small">
             <span>You won: <b class="you-color" id="wins1">0</b></span>
@@ -59,9 +59,9 @@
         </div>
       </div>
       <aside class="notes">
-        Let a student come up and flip a few times. It feels fair because at this point it IS fair (50/50).
-        The point of this slide is to get everyone to agree out loud: "a coin flip is fair." You'll break that
-        belief in 90 seconds.
+        Let a student come up and flip a few times. It feels fair because right now it is fair, a true 50/50.
+        The job of this slide is to get everyone to say out loud that a coin flip is fair. You break that belief
+        in about 90 seconds.
       </aside>
     </section>
 
@@ -88,12 +88,12 @@
           </p>
         </div>
       </div>
-      <p class="fragment muted small">Flip the switch to <strong>OFF</strong> → that's the coin a real sportsbook uses. Run 100 flips again.</p>
+      <p class="fragment muted small">Flip the switch to <strong>OFF</strong>. That's the coin a real sportsbook uses. Run 100 flips again and watch.</p>
       <aside class="notes">
-        First run it on the FAIR coin (toggle on). The line wanders up and down but basically goes nowhere —
-        that's a true 50/50 random walk. THEN flip the toggle to "the book's coin" and run 100 again. The line
-        marches down. Same game, same $10 bets, you still win almost half the time — but you slowly lose. Ask:
-        "What changed? You can't even see it on a single flip." That's the whole point.
+        Run it first on the fair coin (switch on). The line wanders up and down but basically goes nowhere.
+        That's a true random walk. Then flip the switch to the book's coin and run 100 more. Now the line drifts
+        down. Same game, same $10 bets, you still win almost half the time, and you still slowly lose. Ask them
+        what changed. They can't see it on any single flip. That is the whole point.
       </aside>
     </section>
 
@@ -102,154 +102,276 @@
       <h2>The coin was <em>weighted.</em></h2>
       <div class="two-col">
         <div>
-          <p>The "book's coin" lands in the house's favor</p>
+          <p>The book's coin lands in the house's favor</p>
           <p class="big-number house-color">52.4%<span class="muted" style="font-size:.35em"> of the time</span></p>
-          <p>You win only <strong class="you-color">47.6%</strong>. You still win <em>a lot</em>. That's what makes it sneaky.</p>
+          <p>You win only <strong class="you-color">47.6%</strong>. You still win plenty. That's exactly what makes it sneaky.</p>
         </div>
         <div>
           <div class="callout">
-            <h3>This number has a name: the <em>vig</em></h3>
-            <p class="small">On your phone it shows up as <strong>−110</strong>. It means: <br>risk <strong>$110</strong> to win <strong>$100</strong>.</p>
-            <p class="small fragment">To just <em>break even</em>, you have to win:</p>
+            <h3>This number has a name. The <em>vig.</em></h3>
+            <p class="small">On your phone it shows up as <strong>−110</strong>. That means you risk <strong>$110</strong> to win <strong>$100</strong>.</p>
+            <p class="small fragment">To just break even, you have to win:</p>
             <p class="big-number gold-color fragment">52.38%</p>
             <p class="xsmall muted fragment">110 ÷ 210 = 0.5238. The coin only needs a tiny tilt to take everything over time.</p>
           </div>
         </div>
       </div>
       <aside class="notes">
-        Math beat: 110/(110+100) = 52.38%. Even if you are a perfect 50/50 predictor — literally as good as a
-        coin — you LOSE, because you need 52.38% just to tread water. The house edge per even-money flip here is
-        about 4.76% of every dollar you put at risk. Connect it: "A real book doesn't bend the coin — it pays
-        you less than it takes. Mathematically identical to a weighted coin."
+        The math beat: 110 / (110 + 100) = 52.38%. Even if you pick winners like a perfect coin, you still lose,
+        because you need 52.38% just to tread water. The house edge per even-money flip here is about 4.76% of
+        every dollar you risk. A real book doesn't physically bend the coin. It just pays you a little less than
+        it takes. Same thing.
       </aside>
     </section>
 
-    <!-- 5. "I'm good at sports" -->
+    <!-- 5. S&P 500 OPPORTUNITY COST -->
+    <section>
+      <span class="tag">Okay. About the money you just lost.</span>
+      <h2>What if you'd put it in the market instead?</h2>
+      <p class="small">The S&amp;P 500 has averaged about 10% a year over the long run. Drag to set how much you'd have invested, one time, and leave it alone.</p>
+      <div class="two-col">
+        <div>
+          <div class="leg-control">
+            <span class="small">Amount</span>
+            <input type="range" min="50" max="5000" step="50" value="500" class="legs" id="spAmount">
+            <span class="leg-count gold-color" id="spVal">$500</span>
+          </div>
+          <p class="small">Same money. One choice loses a little every bet, on purpose. The other one quietly grows.</p>
+          <p class="xsmall muted">10% a year is the long-run historical average, not a promise. But it beats a guaranteed loss every single time.</p>
+        </div>
+        <div>
+          <div class="sp-row"><span class="sp-label">In 1 year</span><div class="bar-track"><div class="bar-fill fair" id="spBar1"></div></div><span class="sp-amt you-color" id="spY1">$550</span></div>
+          <div class="sp-row"><span class="sp-label">In 3 years</span><div class="bar-track"><div class="bar-fill fair" id="spBar3"></div></div><span class="sp-amt you-color" id="spY3">$666</span></div>
+          <div class="sp-row"><span class="sp-label">In 5 years</span><div class="bar-track"><div class="bar-fill fair" id="spBar5"></div></div><span class="sp-amt you-color" id="spY5">$805</span></div>
+          <div class="sp-row"><span class="sp-label">In 10 years</span><div class="bar-track"><div class="bar-fill fair" id="spBar10"></div></div><span class="sp-amt you-color" id="spY10">$1,297</span></div>
+        </div>
+      </div>
+      <aside class="notes">
+        This is the gut check right after they watched the coin drain their money. Same dollars, two paths. The
+        book is built to take a slice of your money over and over. A broad index fund is built to do the opposite.
+        Math: future value = amount × 1.10^years, so 1, 3, 5, and 10 years give roughly 1.10, 1.33, 1.61, and
+        2.59 times the money. Be honest that returns vary year to year and nothing is guaranteed. The contrast
+        you want them to feel: one of these is designed to shrink, the other to grow.
+      </aside>
+    </section>
+
+    <!-- 6. READING THE ODDS (+ / − money) -->
+    <section>
+      <h2>Reading the numbers on your phone.</h2>
+      <p class="small">Every price is two things at once. A payout, and a hidden probability. Tap one:</p>
+      <div class="two-col">
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+            <button class="btn ghost odds-preset" data-odds="-200">−200</button>
+            <button class="btn ghost odds-preset" data-odds="-110">−110</button>
+            <button class="btn ghost odds-preset" data-odds="150">+150</button>
+            <button class="btn gold odds-preset" data-odds="300">+300</button>
+            <button class="btn ghost odds-preset" data-odds="1000">+1000</button>
+          </div>
+          <div class="callout">
+            <p class="small" style="margin:.1em 0">You see: <strong class="gold-color" id="oddsShown">+300</strong></p>
+            <p class="small" id="oddsMeaning">Risk <strong>$100</strong> to win <strong>$300</strong>.</p>
+            <p class="small" style="margin-top:.4em">The book's hidden chance it hits:</p>
+            <p class="big-number house-color" id="oddsProb">25%</p>
+          </div>
+        </div>
+        <div>
+          <h3>Minus means favorite. Plus means underdog.</h3>
+          <ul class="small">
+            <li>A <strong>minus</strong> number: you risk more than you'd win. It's likely to happen.</li>
+            <li>A <strong>plus</strong> number: you risk less than you'd win. It's unlikely to happen.</li>
+          </ul>
+          <p class="small fragment">A <strong>+300</strong> feels like a jackpot. Really it's the book saying "this happens about 1 in 4 times," and they've shaded that chance so the true odds are even worse. Those big plus numbers are exactly what people stack into parlays. 👀</p>
+        </div>
+      </div>
+      <aside class="notes">
+        Tap the presets. The idea to install: a price is a probability wearing a costume. +300 means
+        100 / (100 + 300) = 25%. −200 means 200 / 300 = 66.7%. −110 means 52.4%. +1000 means about 9%. Kids see
+        the payout ("+1000, easy money") and skip the part where it means a 9% chance, and really less after the
+        book shades it. This slide is the decoder ring for the parlay slide.
+      </aside>
+    </section>
+
+    <!-- 7. "I'm good at sports" -->
     <section>
       <h2>"But I actually <em>know</em> sports."</h2>
       <div class="two-col">
         <div>
-          <p>This is the trap built <em>specifically</em> for you.</p>
+          <p>This is the trap built for you specifically.</p>
           <ul>
-            <li class="fragment">Knowing ball makes you feel in <strong>control</strong>. Psychologists call it the <em>illusion of control</em>.</li>
-            <li class="fragment">The line already <em>has</em> your knowledge baked in — <span class="v-insider">set by models like the ones I build.</span><span class="v-neutral">set by professional modelers whose entire job is to beat you.</span></li>
-            <li class="fragment">You're not betting against the team. You're betting against the <strong>weight on the coin</strong>.</li>
+            <li class="fragment">Knowing ball makes you feel in <strong>control</strong>. Psychologists call that the illusion of control.</li>
+            <li class="fragment">The line already has your knowledge baked into it. <span class="v-insider">It's set by models like the ones I build.</span><span class="v-neutral">It's set by professional modelers whose entire job is beating you.</span></li>
+            <li class="fragment">You're not betting against the team. You're betting against the weight on the coin.</li>
           </ul>
         </div>
         <div>
           <div class="callout">
-            <p class="small">Even the <em>sharpest</em> professional bettors on Earth win around</p>
-            <p class="big-number gold-color">53–55%</p>
-            <p class="small">of their bets — barely above the 52.38% break-even line, after a lifetime of work.</p>
-            <p class="fragment small house-color">The "I know sports" feeling is the bait. It's not an edge — it's the hook.</p>
+            <p class="small">Even the sharpest professional bettors alive win about</p>
+            <p class="big-number gold-color">53 to 55%</p>
+            <p class="small">of their bets. Barely above the 52.38% break-even line, after a lifetime of work.</p>
+            <p class="fragment small house-color">The "I know sports" feeling is the bait. It isn't an edge. It's the hook.</p>
           </div>
         </div>
       </div>
       <aside class="notes">
         This is the emotional center for teenage boys. The confidence that they understand sports is exactly the
-        lever. Be honest: skill in sports prediction is real but tiny, and the vig eats it. Pros who clear 55%
-        are legends — and the book just limits or bans them. The kid in the back is not beating people whose
-        whole job is this. Said kindly, not as a put-down.
+        lever the book pulls. Be honest: skill in predicting sports is real, but it's tiny, and the vig eats it.
+        Pros who clear 55% are legends, and the book just limits or bans them. The kid in the back is not beating
+        people whose whole job is this. Say it kindly, not as a put-down.
       </aside>
     </section>
 
-    <!-- 6. PARLAYS -->
+    <!-- 8. HOW BOOKS PRICE BETS (animated linked diagram) -->
     <section>
-      <h2>The product they <em>really</em> want you to buy: the parlay.</h2>
-      <div class="parlay-grid">
-        <div>
-          <p class="small">A parlay stacks bets — all must hit. Feels like a lottery ticket: tiny bet, huge payout. Slide it:</p>
-          <div class="leg-control">
-            <span class="small">Legs:</span>
-            <input type="range" min="1" max="10" value="4" class="legs" id="legs">
-            <span class="leg-count gold-color" id="legCount">4</span>
-          </div>
-          <p class="small">Each leg is a <em>fair coin flip</em> priced at −110. A $10 ticket.</p>
-          <div class="hold-box">
-            <p class="small muted" style="margin:0">The book's expected cut of your $10:</p>
-            <p class="big-number" id="hold">17%</p>
-          </div>
+      <span class="tag v-insider">How we price a bet</span>
+      <span class="tag v-neutral">How the book prices a bet</span>
+      <h2>The number isn't a guess. It's a <em>machine.</em></h2>
+      <div class="pflow" id="pflow">
+        <div class="pnode"><b>Years of data</b><span>millions of past plays</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode"><b>Rolling features</b><span>everything you'd see watching the game</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode"><b>Statistical models</b><span>predict every moving piece</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode sim" data-sim="1"><b>Simulate 250,000×</b><canvas id="simChart"></canvas><span><i id="simCount">0</i> games played</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode"><b>Range of outcomes</b><span>this <em>is</em> the fair odds</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode"><b>Add the vig</b><span>the house tax on top</span></div>
+        <div class="parrow">➜</div>
+        <div class="pnode pprice"><b>The price you bet</b><span class="priceval">−110</span></div>
+      </div>
+      <div class="center">
+        <button class="btn gold" id="buildPrice">▶ Build the price</button>
+      </div>
+      <p class="fragment small callout" style="margin-top:.5em"><span class="v-insider">And it keeps going. A team of <strong>traders</strong> nudges those prices, and once the line is live, the <strong>hundreds of thousands of people betting</strong> sharpen it even more. Their money shows us where we're wrong.</span><span class="v-neutral">And it keeps going. A team of <strong>traders</strong> nudges those prices, and once the line is live, the <strong>hundreds of thousands of people betting</strong> sharpen it even more. Their money shows where the line is wrong.</span></p>
+      <aside class="notes">
+        This is your show-them-the-machine slide, and your unique value. The boxes light up in order and link
+        together, ending on the actual price. Walk it in plain words: years of game data, turned into rolling
+        features (literally everything you'd notice watching, but measured), fed into statistical models, run
+        through a simulation hundreds of thousands of times. The spread of those simulated games is the fair
+        odds. Then you add the vig, and that becomes the price on the screen. Then human traders adjust it, and
+        the live betting crowd sharpens it more. Takeaway for a student: you are not out-guessing a buddy. You're
+        up against data, simulation, pro traders, and the whole betting crowd, and then a tax on top.
+        (Neutral mode swaps "we" for "the book.")
+      </aside>
+    </section>
+
+    <!-- 9. CAN YOU BEAT THE BOOK? -->
+    <section>
+      <h2>So can you <em>ever</em> beat it?</h2>
+      <p class="small">Honestly, yes. But there are only four ways, and all of them are brutally hard.</p>
+      <div class="two-col">
+        <ul class="pill-list small">
+          <li class="fragment"><strong>1. Build a better model</strong> than the people who do this full time. Good luck.</li>
+          <li class="fragment"><strong>2. Know something nobody else does.</strong> Real insider info, which is usually illegal or against the rules.</li>
+        </ul>
+        <ul class="pill-list small">
+          <li class="fragment"><strong>3. Be faster than the line.</strong> Grab a stale price before it updates. People call it front-running.</li>
+          <li class="fragment"><strong>4. Arbitrage.</strong> Bet both sides at different books and lock in a profit.</li>
+        </ul>
+      </div>
+      <p class="fragment callout" style="border-left-color:var(--house)">
+        Here's the kicker. <strong class="house-color">Do any of these well, and the book limits or bans you.</strong>
+        Win too much and your max bet quietly drops to five dollars. The game is built so that being good at it gets you kicked out.
+      </p>
+      <aside class="notes">
+        The honest "is there hope" slide. Don't pretend it's impossible, but be real. The four edges: a better
+        model, genuine private information (note that insider info is usually illegal or against terms), speed on
+        stale lines, and arbitrage across books. Then the punchline that lands hardest with competitive teenage
+        boys: sportsbooks profile customers and limit or ban the winners. They don't want action from everyone.
+        They want customers who lose. If you're good enough to win, you're not allowed to play. Let that sit.
+      </aside>
+    </section>
+
+    <!-- 10. PARLAYS AS A SERIES OF COIN FLIPS -->
+    <section>
+      <h2>A parlay is just a row of coin flips.</h2>
+      <p class="small">Every coin has to land on <em>YOU</em>. Miss one and the whole thing loses. Add flips:</p>
+      <div class="leg-control">
+        <span class="small">Flips in the parlay:</span>
+        <input type="range" min="2" max="8" value="4" class="legs" id="legs">
+        <span class="leg-count gold-color" id="legCount">4</span>
+        <button class="btn gold" id="flipAll" style="margin-left:10px">Flip all</button>
+      </div>
+      <div class="parlay-coins" id="parlayCoins"></div>
+      <p class="small" id="parlayResult" style="min-height:1.2em">&nbsp;</p>
+      <div class="two-col" style="margin-top:.2em">
+        <div class="callout small">
+          <p style="margin:.1em 0">Chance all <b id="legCount2">4</b> land on YOU: <strong class="you-color" id="trueProb">6.3%</strong></p>
+          <p style="margin:.1em 0">A fair payout on $10 would be <strong class="you-color" id="fairPay">$150</strong>.</p>
+          <p style="margin:.1em 0">What the book actually pays you: <strong class="gold-color" id="offerPay">$123</strong>.</p>
         </div>
-        <div>
-          <div class="bar-row">
-            <div class="bar-label"><span>Your real chance to win</span><span class="you-color" id="trueProb">6.3%</span></div>
-            <div class="bar-track"><div class="bar-fill fair" id="probBar" style="width:6%"></div></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label"><span>A <em>fair</em> payout would be</span><span class="you-color" id="fairPay">$150</span></div>
-            <div class="bar-track"><div class="bar-fill fair" id="fairBar" style="width:100%"></div></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label"><span>What they actually pay you</span><span class="gold-color" id="offerPay">$123</span></div>
-            <div class="bar-track"><div class="bar-fill offered" id="offerBar" style="width:82%"></div></div>
-          </div>
-          <p class="xsmall muted fragment">One bet: ~4.5% cut. Stack the bets, and the cut <em>compounds</em>. Ten legs: the house keeps over a third of every dollar — that's why every promo is for a parlay.</p>
+        <div class="hold-box">
+          <p class="small muted" style="margin:0">The book's expected cut of your $10:</p>
+          <p class="big-number" id="hold">17%</p>
         </div>
       </div>
+      <p class="xsmall muted fragment">One flip, the cut is about 4.5%. Stack the flips and the cut piles up. Eight flips and the house keeps more than a third of every dollar. That's why every promo pushes a parlay.</p>
       <aside class="notes">
-        Drag the slider from 1 to 10 and watch the hold % balloon: 4.5% → ~17% (4 legs) → ~37% (10 legs).
-        Formula on screen is exact: hold = 1 − 0.95455^legs. The reveal: parlays are marketed the hardest
-        (every "bet $5 get $200" promo is a parlay) precisely because they're the most profitable for the book
-        and feel the most fun for the player. Best margin, best engagement. That's not an accident.
+        This ties the parlay straight back to the coin. Drag from 2 to 8 flips and hit Flip all. They'll watch a
+        parlay miss almost every time, because all the coins have to land your way at once. Real chance is
+        0.5^flips. The cut formula on screen is exact: 1 − 0.95455^flips, so it climbs from about 4.5% at one
+        flip to roughly 17% at four and about 37% at eight. The lesson: parlays feel like a lottery ticket and
+        get marketed the hardest precisely because they are the most profitable for the book.
       </aside>
     </section>
 
-    <!-- 7. ENGINEERED ENGAGEMENT -->
+    <!-- 11. ENGINEERED ENGAGEMENT -->
     <section>
       <span class="tag v-insider">Confession time</span>
       <span class="tag v-neutral">Behind the curtain</span>
       <h2 class="v-insider">I help build these things. Here's what we're doing.</h2>
       <h2 class="v-neutral">Here's what these apps are actually doing.</h2>
-      <p class="small">None of this is generosity. It's <em>engineering</em>, and you're the thing being optimized.</p>
+      <p class="small">None of this is generosity. It's engineering, and you are the thing being optimized.</p>
       <div class="two-col">
         <ul class="pill-list small">
-          <li class="fragment"><strong>"Free" bets &amp; boosts</strong> — get you in the door; almost always a parlay; the math still favors the house.</li>
-          <li class="fragment"><strong>Same-game parlays</strong> — the highest-margin product, dressed up as the most fun.</li>
+          <li class="fragment"><strong>"Free" bets and boosts.</strong> They get you in the door, they're almost always a parlay, and the math still favors the house.</li>
+          <li class="fragment"><strong>Same-game parlays.</strong> The highest-margin product, dressed up as the most fun.</li>
         </ul>
         <ul class="pill-list small">
-          <li class="fragment"><strong>Live / in-play betting</strong> — a new bet every 20 seconds. Constant action = no time to think.</li>
-          <li class="fragment"><strong>Push notifications</strong> — timed to pull you back. The app <em>wants</em> a habit, not a customer.</li>
+          <li class="fragment"><strong>Live betting.</strong> A new bet every 20 seconds. Constant action means no time to think.</li>
+          <li class="fragment"><strong>Push notifications.</strong> Timed to pull you back. The app wants a habit, not a customer.</li>
         </ul>
       </div>
-      <p class="fragment callout">A casino has clocks and exits. The app in your pocket has neither — and it knows your name.</p>
+      <p class="fragment callout">A casino has clocks and exits. The app in your pocket has neither, and it knows your name.</p>
       <aside class="notes">
-        This is where being an insider pays off. Speak plainly about the design intent: retention, time-on-app,
-        deposit frequency, win-back campaigns after someone goes quiet. You don't need to leak anything
-        proprietary — the patterns are industry-standard and publicly documented. The honesty is the lesson:
-        "Smart people are paid a lot of money to keep your thumb on this screen."
-        (NEUTRAL MODE: if you've toggled the framing to neutral with the M key, deliver this as an
-        industry-literate teacher — "here's what these apps are doing" — without claiming you build them.)
+        This is where knowing the inside pays off. Speak plainly about the design intent: retention, time on app,
+        deposit frequency, win-back campaigns after someone goes quiet. You don't need to leak anything. The
+        patterns are industry standard and publicly documented. The honesty is the lesson. Smart people are paid
+        a lot of money to keep your thumb on this screen. (In neutral mode, deliver it as an industry-literate
+        teacher, without claiming you build them.)
       </aside>
     </section>
 
-    <!-- 8. YOUR BRAIN -->
+    <!-- 12. YOUR BRAIN -->
     <section>
       <h2>Why it grabs <em>your</em> brain especially.</h2>
       <div class="two-col">
         <div>
           <ul class="small">
-            <li class="fragment">A <strong>near-miss</strong> (parlay misses by one leg) lights up your brain almost like a <em>win</em>. That's by design.</li>
-            <li class="fragment">Unpredictable rewards are the <em>most</em> habit-forming pattern that exists — same one slot machines use.</li>
-            <li class="fragment">The teenage brain's brakes (impulse control) are the <em>last</em> part to finish developing — around age 25.</li>
+            <li class="fragment">A near-miss, like a parlay that misses by one leg, lights up your brain almost like a win. That's on purpose.</li>
+            <li class="fragment">Unpredictable rewards are the most habit-forming pattern there is. It's the same one slot machines use.</li>
+            <li class="fragment">The teenage brain's brakes, your impulse control, are the last part to finish developing, around age 25.</li>
           </ul>
         </div>
         <div>
           <div class="callout">
             <p class="small">Since betting went mobile in <strong>2018</strong>, the fastest-rising group of problem gamblers is</p>
             <p class="big-number house-color">young men</p>
-            <p class="xsmall muted">It's in your pocket, tied to the sport you love, with friends doing it too. That's the perfect storm — and you're standing in it.</p>
+            <p class="xsmall muted">It's in your pocket, tied to the sport you love, with your friends doing it too. That's the perfect storm, and you're standing in it.</p>
           </div>
         </div>
       </div>
       <aside class="notes">
-        Keep this evidence-based and non-preachy. Variable-ratio reinforcement is the technical term for
-        unpredictable rewards. The near-miss effect is well documented in gambling research. PASPA was struck
-        down in May 2018, opening mobile sports betting state by state. Adolescent prefrontal cortex development
-        is the impulse-control point. (Cited sources on the final slide.)
+        Keep this evidence-based and not preachy. The technical name for unpredictable rewards is variable-ratio
+        reinforcement. The near-miss effect is well documented in gambling research. PASPA was struck down in May
+        2018, which opened mobile sports betting state by state. The impulse-control point is about how the
+        prefrontal cortex is still developing in teens.
       </aside>
     </section>
 
-    <!-- 9. WARNING SIGNS + HELP -->
+    <!-- 13. WARNING SIGNS + HELP -->
     <section>
       <h2>If it's already not a game anymore.</h2>
       <div class="two-col">
@@ -257,82 +379,41 @@
           <h3>Warning signs</h3>
           <ul class="small">
             <li>Betting more to feel the same buzz</li>
-            <li><em>Chasing</em> — betting to win back losses</li>
+            <li>Chasing, meaning betting to win back losses</li>
             <li>Lying about how much, or hiding it</li>
             <li>Betting money meant for something else</li>
             <li>Can't stop thinking about the next bet</li>
           </ul>
         </div>
         <div>
-          <h3>Help — free, private, 24/7</h3>
+          <h3>Help, free and private, 24/7</h3>
           <div class="help-card">
             <span class="num">Call or text 1-800-GAMBLER</span>
-            <p class="xsmall muted" style="margin:.2em 0 0">National Problem Gambling Helpline — confidential, all 50 states.</p>
+            <p class="xsmall muted" style="margin:.2em 0 0">National Problem Gambling Helpline. Confidential, all 50 states.</p>
           </div>
           <div class="help-card small">
-            Chat: <a href="https://www.ncpgambling.org/chat" target="_blank" rel="noopener">ncpgambling.org/chat</a>
+            Chat at <a href="https://www.ncpgambling.org/chat" target="_blank" rel="noopener">ncpgambling.org/chat</a>
           </div>
-          <p class="xsmall muted">No shame in it. The game was built by pros to be hard to put down. Asking for help is the smart move, not the weak one.</p>
+          <p class="xsmall muted">There's no shame in it. The game was built by pros to be hard to put down. Asking for help is the smart move, not the weak one.</p>
         </div>
       </div>
       <aside class="notes">
         Slow down here. This is the slide that might matter most to one specific kid in the room. Read the
-        helpline number out loud. Tell them they can save it in their phone right now. Normalize asking for help
-        and make clear it's confidential and free. If your school has a counselor, name them here too.
+        helpline number out loud. Tell them to save it in their phone right now. Make clear it's confidential and
+        free. If your school has a counselor, name that person here too.
       </aside>
     </section>
 
-    <!-- 10. CLOSE -->
+    <!-- 14. CLOSE -->
     <section data-auto-animate>
       <h1>You can't beat a weighted coin.</h1>
       <h2 class="gold-color">But now you can see the weight.</h2>
-      <p class="small" style="margin-top:1em">The house isn't lucky. It's <em>patient</em>, and it does math. Now so do you.</p>
+      <p class="small" style="margin-top:1em">The house isn't lucky. It's patient, and it does the math. Now so can you.</p>
       <aside class="notes">
-        Land the plane. The goal was never "gambling is evil" — it was "see the machine clearly." A kid who
-        understands the vig, the parlay compound, and the engineered habit is far better protected than one who
-        just got yelled at. Optional closer: "If you ever do bet as an adult, treat it like buying a movie
-        ticket — a set amount, for fun, that you expect to lose. Never a way to make money. The math says it
-        can't be."
-      </aside>
-    </section>
-
-    <!-- 11. SOURCES & WHERE TO BUILD FROM -->
-    <section>
-      <h2>Sources &amp; where to build from</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px">
-        <div>
-          <h3>Curricula to adapt</h3>
-          <ul class="xsmall">
-            <li><strong>Stacked Deck</strong> (Williams &amp; Wood, Hazelden 2022) — grades 9–12; true odds, house edge, fallacies. Best evidence base.</li>
-            <li><strong>Florida Council (FCCG)</strong> — free K–12, Common Core probability. <span class="muted">gamblinghelp.org</span></li>
-            <li><strong>ICRG — "Talking with Children About Gambling"</strong> — parent/educator; Harvard-affiliated.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Orgs · grants · training</h3>
-          <ul class="xsmall">
-            <li><strong>NCPG Agility Grants</strong> — NFL-Foundation-funded; youth &amp; athletes.</li>
-            <li><strong>NC Problem Gambling Program</strong> — up to <strong>$5k</strong> school mini-grants to run Stacked Deck.</li>
-            <li><strong>NY (NYCPG + PTA)</strong> — free shipped materials; <em>YOU Decide</em>, <em>Mind Ride</em>.</li>
-            <li><strong>NCAA + EPIC</strong> — athlete-focused, free through 2027.</li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="gold-color">The gap you fill</h3>
-          <p class="xsmall">No vetted curriculum yet teaches <em>modern sportsbook design</em> — parlays, same-game parlays, live betting, promos, push notifications. The evidence base predates app betting. <strong>That's your edge.</strong></p>
-          <div class="help-card xsmall" style="margin-top:.4em">
-            <span class="num">1-800-GAMBLER</span><br>ncpgambling.org/chat
-          </div>
-        </div>
-      </div>
-      <p class="xsmall muted" style="margin-top:.5em">Full annotated, cited list (with URLs &amp; effectiveness caveats) in the repo README.</p>
-      <aside class="notes">
-        These are the verified, fact-checked resources from the research pass. Honest caveats to keep in mind:
-        Stacked Deck's effectiveness evidence comes from studies run by its own developers (2003–07) and predates
-        modern sports betting; the Florida and ICRG materials are pre-2018 too. None teach app-era sportsbook
-        products — which is exactly why a custom deck like this one matters. Youth risk context: roughly 2–7% of
-        young people experience a gambling problem vs ~1% of adults, and boys are at higher risk. Full citations
-        and URLs are in the README.
+        Land the plane. The goal was never "gambling is evil." It was "see the machine clearly." A kid who
+        understands the vig, the parlay pile-up, and the engineered habit is far better protected than one who
+        just got yelled at. Optional closer: if you ever bet as an adult, treat it like a movie ticket. A set
+        amount, for fun, that you expect to lose. Never a way to make money, because the math says it can't be.
       </aside>
     </section>
 

@@ -20,9 +20,15 @@ The deck ships in two voices, toggled with the **M** key (or the chip in the bot
 
 Your choice is remembered between sessions. You can also lock a version with a URL: `?mode=neutral` or `?mode=insider` — handy for a bookmark you'll present from. The corner chip is small and unobtrusive on a projector.
 
-### The two interactive toys
-1. **The coin simulator (slides 2–3).** Flip a fair coin and it feels fair. Then flip the toggle to *"the book's coin"* and run 100 flips — the bankroll line marches down even though you still win ~48% of the time. That invisible drift is the lesson.
-2. **The parlay calculator (slide 6).** Drag the slider from 1 to 10 legs and watch the house's cut balloon from ~4.5% to ~37%. Pure multiplication; genuinely jaw-dropping.
+### The interactive parts
+1. **The coin simulator.** Flip a fair coin and it feels fair. Then flip the toggle to "the book's coin" and run 100 flips. The bankroll line drifts down even though you still win about 48% of the time. That invisible drift is the lesson.
+2. **The S&P 500 reality check.** Right after the coin drains your money, drag a slider for how much you'd have invested instead, and see it grow over 1, 3, 5, and 10 years at the market's long-run average. Same dollars, opposite outcome.
+3. **The odds translator.** Tap presets (-200, -110, +150, +300, +1000) and see each price decoded into "risk $X to win $Y" plus the hidden implied probability. Sets up why a +300 longshot is the parlay's favorite ingredient.
+4. **"Build the price."** The pricing slide is an animated diagram: boxes light up and link together (years of data, rolling features, models, a 250,000-game simulation that draws a bell curve, the range of outcomes, the vig) and the chain ends on the actual price you bet.
+5. **The parlay as coin flips.** A parlay is shown as a row of coins that must all land on YOU. Set 2 to 8 flips, hit "Flip all," and watch most parlays lose. The house's cut climbs from about 4.5% on one flip to roughly 37% on eight.
+
+### Slide arc (14 slides)
+Title, the fair coin, the 100-flip grind, the vig reveal, the S&P 500 reality check, reading the odds, "I'm good at sports," how the book prices a bet (animated), can you beat it (and why winners get limited), the parlay as coin flips, engineered engagement, your brain, warning signs and help, close. (Teacher-facing resources live in this README, not in the deck.)
 
 ## The math (it's exact)
 

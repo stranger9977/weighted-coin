@@ -256,3 +256,48 @@ body.mode-neutral .v-neutral { display: revert; }
 .mode-chip b { color: var(--gold); font-family: "Fredoka", sans-serif; }
 
 .reveal .progress { color: var(--gold); }
+
+/* ===== S&P 500 opportunity-cost bars ===== */
+.sp-row { display: grid; grid-template-columns: 110px 1fr 110px; gap: 12px; align-items: center; margin: .55em 0; }
+.sp-row .sp-label { font-size: .62em; color: var(--muted); }
+.sp-row .sp-amt { font-family: "Fredoka", sans-serif; font-size: .8em; text-align: right; }
+.sp-row .bar-track { height: 22px; }
+
+/* ===== "build the price" linked diagram ===== */
+.pflow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px; margin: .5em 0; }
+.pnode {
+  background: var(--card); border: 1px solid var(--card-line); border-radius: 12px;
+  padding: .45em .55em; width: 148px; min-height: 78px;
+  display: flex; flex-direction: column; justify-content: center; gap: 3px; text-align: center;
+  opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .4s ease;
+}
+.pnode.show { opacity: 1; transform: none; }
+.pnode b { font-family: "Fredoka", sans-serif; font-size: .58em; color: var(--ink); line-height: 1.1; }
+.pnode span { font-size: .42em; color: var(--muted); line-height: 1.15; }
+.pnode.sim { width: 168px; }
+.pnode.sim canvas { width: 100%; height: 40px; margin: 2px 0; }
+.pnode.sim i { font-style: normal; color: var(--gold); font-family: "Fredoka", sans-serif; }
+.pnode.pprice { background: rgba(255,211,78,0.12); border-color: var(--gold); }
+.pnode.pprice .priceval { font-family: "Fredoka", sans-serif; font-size: 1.5em; color: var(--gold); }
+.pnode.pprice.show { animation: pricepop .55s ease; }
+@keyframes pricepop { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.parrow { color: var(--gold); font-size: 1.1em; opacity: 0; transform: scaleX(.2); transition: opacity .3s ease, transform .3s ease; }
+.parrow.show { opacity: 1; transform: none; }
+
+/* ===== parlay: a row of mini coin flips ===== */
+.parlay-coins { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; min-height: 78px; margin: .3em 0 .5em; }
+.mini-coin { width: 62px; height: 62px; }
+.mini-coin .coin-face { font-size: 26px; box-shadow: inset 0 0 0 5px rgba(0,0,0,0.18), 0 6px 14px rgba(0,0,0,0.4); }
+.mini-coin .coin-face .lbl { display: none; }
+.mini-coin.flipping { animation: spin-mini .9s cubic-bezier(.3,.1,.2,1) forwards; }
+.mini-coin.flipping.to-house { animation-name: spin-mini-house; }
+@keyframes spin-mini {
+  0% { transform: rotateY(0) translateY(0); }
+  50% { transform: rotateY(900deg) translateY(-34px); }
+  100% { transform: rotateY(1800deg) translateY(0); }
+}
+@keyframes spin-mini-house {
+  0% { transform: rotateY(0) translateY(0); }
+  50% { transform: rotateY(900deg) translateY(-34px); }
+  100% { transform: rotateY(1980deg) translateY(0); }
+}
