@@ -176,7 +176,7 @@
 .tally { display:flex; gap: 18px; font-size: 0.7em; }
 .tally b { font-family: "Fredoka", sans-serif; }
 
-canvas.chart { width: 100%; height: 220px; background: var(--card); border-radius: 14px; border: 1px solid var(--card-line); }
+canvas.chart { width: 100%; height: 220px; background: var(--card); border-radius: 14px; border: 1px solid var(--card-line); touch-action: none; cursor: crosshair; }
 
 .toggle-row { display: flex; align-items: center; gap: 10px; font-size: 0.6em; margin-top: 6px; }
 .switch { position: relative; width: 52px; height: 28px; }

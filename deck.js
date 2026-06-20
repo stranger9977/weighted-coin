@@ -73,7 +73,7 @@ function flipSlide1() {
 const SAMPLE_CAP = 400; // max points kept for the chart, so a million flips stays fast
 const s2 = {
   bank: 100, start: 100, bet: 10, wins: 0, losses: 0, fair: true,
-  samples: [100], sampleStep: 1, sinceSample: 0, playing: false,
+  samples: [100], sampleStep: 1, sinceSample: 0, playing: false, hover: null,
 };
 
 function s2PlayerWins() { return Math.random() < (s2.fair ? 0.5 : PLAYER_WIN_PROB); }
@@ -92,7 +92,7 @@ function s2ApplyFlip() {
   else { s2.bank -= s2.bet; s2.losses++; }
   s2RecordSample();
 }
-function fmtBank(v) { return (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString(); }
+function fmtBank(v) { return (v < 0 ? '-$' : '$') + Math.round(Math.abs(v)).toLocaleString(); }
 function s2Render() {
   const bankEl = document.getElementById('bank2');
   if (!bankEl) return;
@@ -149,36 +149,68 @@ function playToMillion() {
   };
   step();
 }
-function drawChart() {
-  const canvas = document.getElementById('chart2');
+/* shared line-chart renderer with a drag/hover crosshair showing profit/loss at any point */
+const CHART_PAD = 16;
+function drawLine(canvas, data, start, hoverIdx) {
   if (!canvas) return;
   const dpr = window.devicePixelRatio || 1;
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w) return;
   canvas.width = w * dpr; canvas.height = h * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-  const data = s2.samples, pad = 14;
-  const maxV = Math.max(s2.start * 1.4, ...data, 20);
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
+  const pad = CHART_PAD;
+  const maxV = Math.max(start * 1.25, ...data, start + 20);
   const minV = Math.min(0, ...data);
+  const range = (maxV - minV) || 1;
   const xFor = i => pad + (i / Math.max(1, data.length - 1)) * (w - 2 * pad);
-  const yFor = v => h - pad - ((v - minV) / (maxV - minV)) * (h - 2 * pad);
+  const yFor = v => h - pad - ((v - minV) / range) * (h - 2 * pad);
 
   ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(pad, yFor(s2.start)); ctx.lineTo(w - pad, yFor(s2.start)); ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '11px Inter, sans-serif';
-  ctx.fillText('start $' + s2.start, pad + 2, yFor(s2.start) - 4);
+  ctx.beginPath(); ctx.moveTo(pad, yFor(start)); ctx.lineTo(w - pad, yFor(start)); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '12px Inter, sans-serif';
+  ctx.fillText('start $' + start, pad + 2, yFor(start) - 5);
 
-  const ending = data[data.length - 1];
-  const up = ending >= s2.start;
-  ctx.strokeStyle = up ? '#38d39f' : '#ff5d73'; ctx.lineWidth = 3;
+  const up = data[data.length - 1] >= start;
+  ctx.strokeStyle = up ? '#38d39f' : '#ff5d73'; ctx.lineWidth = 2.5;
   ctx.beginPath();
   data.forEach((v, i) => { i ? ctx.lineTo(xFor(i), yFor(v)) : ctx.moveTo(xFor(i), yFor(v)); });
   ctx.stroke();
   ctx.lineTo(xFor(data.length - 1), yFor(minV)); ctx.lineTo(xFor(0), yFor(minV)); ctx.closePath();
   ctx.fillStyle = up ? 'rgba(56,211,159,0.12)' : 'rgba(255,93,115,0.12)'; ctx.fill();
+
+  if (hoverIdx != null && hoverIdx >= 0 && hoverIdx < data.length) {
+    const x = xFor(hoverIdx), v = data[hoverIdx], y = yFor(v), net = v - start;
+    const col = net >= 0 ? '#38d39f' : '#ff5d73';
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, h - pad); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 7); ctx.fill();
+    const lbl = (net >= 0 ? '+$' : '-$') + Math.abs(Math.round(net)).toLocaleString();
+    ctx.font = 'bold 13px Inter, sans-serif';
+    const tw = ctx.measureText(lbl).width + 14;
+    const lx = Math.max(2, Math.min(w - tw - 2, x - tw / 2));
+    const ly = Math.max(2, y - 30);
+    ctx.fillStyle = 'rgba(13,27,42,0.95)'; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+    ctx.fillRect(lx, ly, tw, 22); ctx.strokeRect(lx, ly, tw, 22);
+    ctx.fillStyle = col; ctx.textAlign = 'center';
+    ctx.fillText(lbl, lx + tw / 2, ly + 15); ctx.textAlign = 'left';
+  }
 }
+function hoverIndex(canvas, e, len) {
+  const rect = canvas.getBoundingClientRect();
+  const w = canvas.clientWidth || rect.width;
+  const xCss = (e.clientX - rect.left) * (w / rect.width);
+  const frac = (xCss - CHART_PAD) / (w - 2 * CHART_PAD);
+  return Math.max(0, Math.min(len - 1, Math.round(frac * (len - 1))));
+}
+function attachChartHover(canvas, getData, setHover, redraw) {
+  if (!canvas || canvas._hoverWired) return;
+  canvas._hoverWired = true;
+  const move = e => { const d = getData(); if (!d.length) return; setHover(hoverIndex(canvas, e, d.length)); redraw(); };
+  canvas.addEventListener('pointermove', move);
+  canvas.addEventListener('pointerdown', move);
+  canvas.addEventListener('pointerleave', () => { setHover(null); redraw(); });
+}
+function drawChart() { drawLine(document.getElementById('chart2'), s2.samples, s2.start, s2.hover); }
 
 /* =========================================================
    SLIDE 5 — S&P 500 opportunity cost
@@ -474,7 +506,7 @@ function flipAllCoins() {
 /* =========================================================
    SLIDE 12 — no free lunch: keep betting and the spikes fade
    ========================================================= */
-const lunch = { bank: 100, start: 100, bets: 0, samples: [100], sampleStep: 1, sinceSample: 0, busy: false, p: 0.22, profit: 30 };
+const lunch = { bank: 100, start: 100, bets: 0, samples: [100], sampleStep: 1, sinceSample: 0, busy: false, p: 0.22, profit: 30, hover: null };
 const LUNCH_STAKE = 10, LUNCH_CAP = 500;
 function parlayEconomics() {                  // the exact parlay the user built on the previous slide
   const legs = selectedLegs();
@@ -493,31 +525,7 @@ function lunchStep() {
     if (lunch.samples.length > LUNCH_CAP) { lunch.samples = lunch.samples.filter((_, i) => i % 2 === 0); lunch.sampleStep *= 2; }
   }
 }
-function drawLunch() {
-  const c = document.getElementById('lunchChart');
-  if (!c) return;
-  const dpr = window.devicePixelRatio || 1;
-  const w = c.clientWidth, h = c.clientHeight;
-  if (!w) return;
-  c.width = w * dpr; c.height = h * dpr;
-  const ctx = c.getContext('2d');
-  ctx.scale(dpr, dpr); ctx.clearRect(0, 0, w, h);
-  const data = lunch.samples, pad = 16;
-  const maxV = Math.max(lunch.start * 1.2, ...data), minV = Math.min(0, ...data);
-  const xFor = i => pad + (i / Math.max(1, data.length - 1)) * (w - 2 * pad);
-  const yFor = v => h - pad - ((v - minV) / (maxV - minV)) * (h - 2 * pad);
-  ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(pad, yFor(lunch.start)); ctx.lineTo(w - pad, yFor(lunch.start)); ctx.stroke();
-  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '12px Inter, sans-serif';
-  ctx.fillText('start $' + lunch.start, pad + 2, yFor(lunch.start) - 5);
-  const up = data[data.length - 1] >= lunch.start;
-  ctx.strokeStyle = up ? '#38d39f' : '#ff5d73'; ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  data.forEach((v, i) => { i ? ctx.lineTo(xFor(i), yFor(v)) : ctx.moveTo(xFor(i), yFor(v)); });
-  ctx.stroke();
-  ctx.lineTo(xFor(data.length - 1), yFor(minV)); ctx.lineTo(xFor(0), yFor(minV)); ctx.closePath();
-  ctx.fillStyle = up ? 'rgba(56,211,159,0.12)' : 'rgba(255,93,115,0.12)'; ctx.fill();
-}
+function drawLunch() { drawLine(document.getElementById('lunchChart'), lunch.samples, lunch.start, lunch.hover); }
 function updateLunchHud() {
   const b = document.getElementById('lunchBank');
   if (b) { b.textContent = fmtBank(lunch.bank); b.className = lunch.bank >= lunch.start ? 'you-color' : 'house-color'; }
@@ -619,6 +627,9 @@ function wire() {
 
   const kelly = document.getElementById('kellyRate');
   if (kelly) { kelly.oninput = updateKelly; updateKelly(); }
+
+  attachChartHover(document.getElementById('chart2'), () => s2.samples, v => { s2.hover = v; }, drawChart);
+  attachChartHover(document.getElementById('lunchChart'), () => lunch.samples, v => { lunch.hover = v; }, drawLunch);
 }
 
 Reveal.on('ready', () => {
